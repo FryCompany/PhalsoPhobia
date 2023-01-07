@@ -5,6 +5,7 @@
 
 int main( ) {
 int scelta;
+
   do{
     scelta=0;
     //printf("\e[1;1H\e[2J \n" );
@@ -24,7 +25,8 @@ int scelta;
       break;
 
       case 2:
-      printf("caso 2\n");
+        printf("caso 2\n");
+
       break;
 
       case 3:
