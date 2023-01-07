@@ -41,11 +41,12 @@ do{
 }
 
 void imposta_nomi(int num_giocatori){
-  int flag=0;
-  int i=0;
+  int flag=0,flag2=0,i=0,flag3=0;
+  char nomi[4];
   for(i=0;i<num_giocatori;i++){
     do{
     flag=0;
+    flag2=0;
     printf("inserire il nome del %i giocatore :",i+1 );
        scanf("%s", giocatori[i].nome);
      while((getchar()) != '\n');
@@ -56,8 +57,19 @@ void imposta_nomi(int num_giocatori){
           break;
         }else
         flag=1;
+
       }
-    }while (!flag);
+      for(int g=0;g<20;g++){
+        nomi[g]=giocatori[i].nome[g];
+
+      }
+      if(strcmp(nomi, giocatori[i+1].nome)==0){ //ERRORE QUI 
+      printf("sono uguali \n");
+      flag3=1;
+      }
+      if(flag3==0)
+       flag2=1;
+    }while (!flag && !flag2);
 
 
 
