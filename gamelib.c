@@ -24,10 +24,9 @@ do{
     giocatori=(struct Giocatore *) calloc(num_giocatori, sizeof(struct Giocatore));
     imposta_nomi(num_giocatori);
     for(int i=0;i<num_giocatori;i++){
-        giocatori[i].sanita_mentale=100;
-        //printf("%i sanita giocatore %d\n",giocatori[i].sanita_mentale,i+1 );
-
-}
+        giocatori[i].sanita_mentale=100;//imposiamo per  ogni giocatore la sanita mentale massima
+      }
+    imposta_difficolta();
     printf("Hai selezionato il numero di player \n");
     break;
 
@@ -41,60 +40,52 @@ do{
 }
 
 void imposta_nomi(int num_giocatori){
-  int flag=0,flag2=0,i=0,flag3=0;
+  int flag=0,flag2=0,i=0;
   char nomi[4][20];
   char appoggio[20];
   for(i=0;i<num_giocatori;i++){
     do{
     flag=0;
     flag2=0;
-    flag3=0;
+
     printf("inserire il nome del %i giocatore :",i+1 );
        scanf("%s", giocatori[i].nome);
      while((getchar()) != '\n');
        // Verifica se ogni carattere della stringa è alfabetico
   for (int f = 0; giocatori[i].nome[f] != '\0'; f++) {
       if (!((giocatori[i].nome[f] >= 'A' && giocatori[i].nome[f] <= 'Z') || (giocatori[i].nome[f] >= 'a' && giocatori[i].nome[f] <= 'z'))) {
-          printf("Il nome può contenere solo lettere\n");
-          break;
-        }else
-        flag=1;
+          printf("Il nome non puo' contenere numeri o caratteri speciali \n");
+          flag=1;
+        break;
         }
-
+        }
+        //Copiamo in un array di caratteri il nome inserito per verificare che il nome non sia gia stato inserito
         for (int h = 0; h < strlen(giocatori[i].nome); h++) {
           nomi[i][h] = giocatori[i].nome[h];
         }
         // Aggiungiamo il carattere di fine stringa all'array
           nomi[i][strlen(giocatori[i].nome)] = '\0';
 
-
-    /*  for(int g=0;g<num_giocatori;g++){
-        strcpy(nomi[g], giocatori[g].nome);
-        printf("%c\n",nomi[g] );*/
-
-      //}
       for (int y = 0; y < num_giocatori; y++)
           if ((strcmp(nomi[y], giocatori[i].nome) == 0) && y!=i) {
-            printf("sono uguali \n");
-              flag2=1;
+            printf("Nome gia' inserito , Reinseriscilo  \n");
+            flag=1;
+            break;
+
           }
-
-
-
-
-
-
-    }while (!flag &&  !flag2);
-
-
-
-
+    }while(flag==1);
        printf("il nome del %i giocatore : %s\n",i+1,giocatori[i].nome );
-
-      //giocatori[i].sanita_mentale=100;
-
-      //printf("%i sanita giocatore %d\n",giocatori[i].sanita_mentale,i+1 );
 }
+
+
+}
+
+void imposta_difficolta(){
+printf("Selezionare la difficolta :\n");
+printf("1) Dilettante \n");
+printf("2) Intermedio \n");
+printf("3) Incubo \n");
+
 
 
 }

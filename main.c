@@ -25,6 +25,7 @@ int scelta;
       break;
 
       case 2:
+    
         printf("caso 2\n");
 
       break;

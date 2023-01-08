@@ -14,6 +14,7 @@ void imposta_gioco();
 
 //static
 static void imposta_nomi(int num_giocatori);
+static void imposta_difficolta();
 static struct Giocatore* giocatori;
 
 
