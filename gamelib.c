@@ -42,7 +42,7 @@ do{
 
 void imposta_nomi(int num_giocatori){
   int flag=0,flag2=0,i=0,flag3=0;
-  char nomi[20];
+  char nomi[4][20];
   char appoggio[20];
   for(i=0;i<num_giocatori;i++){
     do{
@@ -59,29 +59,32 @@ void imposta_nomi(int num_giocatori){
           break;
         }else
         flag=1;
+        }
 
-      }
+        for (int h = 0; h < strlen(giocatori[i].nome); h++) {
+          nomi[i][h] = giocatori[i].nome[h];
+        }
+        // Aggiungiamo il carattere di fine stringa all'array
+          nomi[i][strlen(giocatori[i].nome)] = '\0';
 
-      for(int g=0;g<20;g++){
-        nomi[g]=giocatori[i].nome[g];
 
-      }
-      switch (i) {
-        case 0:
-        break;
-        case 1:
-          if (strcmp(giocatori[0].nome, giocatori[1].nome) == 0) {
+    /*  for(int g=0;g<num_giocatori;g++){
+        strcpy(nomi[g], giocatori[g].nome);
+        printf("%c\n",nomi[g] );*/
+
+      //}
+      for (int y = 0; y < num_giocatori; y++)
+          if ((strcmp(nomi[y], giocatori[i].nome) == 0) && y!=i) {
             printf("sono uguali \n");
-
-          }else{
-            flag2=1;
+              flag2=1;
           }
 
-      }
 
 
 
-    }while (!flag && !flag2);
+
+
+    }while (!flag &&  !flag2);
 
 
 
