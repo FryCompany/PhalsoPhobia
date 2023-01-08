@@ -81,10 +81,33 @@ void imposta_nomi(int num_giocatori){
 }
 
 void imposta_difficolta(){
+  int input;
+  int flag=0;
+do{
 printf("Selezionare la difficolta :\n");
 printf("1) Dilettante \n");
 printf("2) Intermedio \n");
 printf("3) Incubo \n");
+printf("Inserire la scelta :");
+scanf("%d", &input);
+switch (input) {
+  case 1:
+  printf("1) Dilettante \n");
+
+  break;
+  case 2:
+  printf("2) Intermedio \n");
+  break;
+  case 3:
+  printf("3) Incubo \n");
+  break;
+  default:
+  printf("ciao ");
+  
+  break;
+
+}
+}while(!flag);
 
 
 

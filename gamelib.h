@@ -24,6 +24,7 @@ enum tipo_oggetto_zona {adrenalina,cento_dollari,coltello,nessun_oggetto};
 enum  tipo_zona{caravan,cucina,soggiorno,camera,bagno,garage,seminterrato};
 enum tipo_prova {prova_emf,prova_spirit_box,prova_videocamera,nessuna_prova};
 
+
 //struct
 struct Giocatore{
   char nome[20];
