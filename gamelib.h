@@ -10,6 +10,7 @@
 
 
 
+
 //funzioni
 void imposta_gioco();
 

@@ -8,18 +8,22 @@
 
 void imposta_gioco(){
   int num_giocatori;
+  char scelta;
   int flag=0;
 do{
 
   printf("Inserire il numero di giocatori(Min 1,Max 4): ");
-  scanf("%d",&num_giocatori);
+  scanf("%c",&scelta);
   while((getchar()) != '\n');
-  switch (num_giocatori) {
+
+  switch (scelta) {
     printf("%d\n",num_giocatori );
-    case 1:
-    case 2:
-    case 3:
-    case 4:
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    num_giocatori=(int)scelta- '0';
+    printf("%d\n",num_giocatori );
     flag=1;
     giocatori=(struct Giocatore *) calloc(num_giocatori, sizeof(struct Giocatore));
     imposta_nomi(num_giocatori);
