@@ -27,6 +27,7 @@ do{
         giocatori[i].sanita_mentale=100;//imposiamo per  ogni giocatore la sanita mentale massima
       }
     imposta_difficolta();
+    imposta_oggetto_iniziale(num_giocatori);
     printf("Hai selezionato il numero di player \n");
     break;
 
@@ -115,4 +116,28 @@ printf("Valore errato \n");
 
 
 
+}
+void imposta_oggetto_iniziale(int num_giocatori) {
+int oggetto_iniziale;
+int flag=0;
+
+for (int i = 0; i < num_giocatori; i++) {
+  oggetto_iniziale=rand()%5;
+
+  giocatori[i].zaino[0]=oggetto_iniziale;
+  if (oggetto_iniziale<=2) { //controllo se e' stato generato almeno un oggetto neccessario
+    flag=1;
+  }
+  printf("ziano: %d\n", giocatori[i].zaino[0]);
+  }
+
+
+
+  if (flag==0){
+      int oggetto_necessario=rand()%3;             //se non viene inserito un oggetto per raccogliere le prove
+      int giocatore_casuale=rand()%num_giocatori+1;//viene imposto ad un giocatore casuale
+      giocatori[giocatore_casuale].zaino[0]=oggetto_necessario;
+      printf("Il valore necesa è stato inserito \n");
+        printf("ziano: %d\n", giocatori[giocatore_casuale].zaino[0]);
+  }
 }

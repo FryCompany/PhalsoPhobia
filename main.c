@@ -4,6 +4,8 @@
 
 
 int main( ) {
+  time_t t;
+  srand((unsigned)time(&t));
 char scelta;
 int flag=0;
 

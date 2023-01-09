@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
 
 
@@ -15,6 +17,7 @@ void imposta_gioco();
 //static
 static void imposta_nomi(int num_giocatori);
 static void imposta_difficolta();
+static void imposta_oggetto_iniziale(int num_giocatori);
 static struct Giocatore* giocatori;
 
 
