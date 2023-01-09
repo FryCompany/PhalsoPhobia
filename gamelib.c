@@ -145,3 +145,89 @@ for (int i = 0; i < num_giocatori; i++) {
         printf("ziano: %d\n", giocatori[giocatore_casuale].zaino[0]);
   }
 }
+
+void crea_mappa(){
+char scelta;
+do{
+  flag=0;
+  scelta=0;
+printf("Creazione mappa \n");
+printf("1) Inserisci una zona della mappa \n");
+printf("2) Cancella l'ultima zona inserita \n");
+printf("3) Stampa i campi della mappa  \n");
+printf("4) Fine della creazione della mappa  \n");
+
+printf("Inserire la scelta :");
+scanf("%c", &scelta);
+while((getchar()) != '\n');
+switch (scelta) {
+  case '1':
+    void inserisci_zona();
+      flag=1;
+    break;
+  case '2':
+    void cancella_zona();
+      flag=1;
+    break;
+  case '3':
+  void stampa_mappa();
+      flag=1;
+    break;
+  casa '4':
+  void chiudi_mappa(); //inserire controllo se è stata inserita una zona
+  flag=1;
+  break;
+  default:
+printf("Valore errato \n");
+    break;
+  }
+}while (flag!=1);
+
+
+
+}
+
+void inserisci zona(){
+  char scelta;
+  do{
+    flag=0;
+    scelta=0;
+  printf("Quale zona vuoi inserire  \n");
+  printf("1)Cucina  \n");
+  printf("2)Soggiorno  \n");
+  printf("3)Camera   \n");
+  printf("4)Bagno   \n");
+  printf("5)Garage   \n");
+  printf("6)Seminterrato   \n");
+
+  printf("Inserire la scelta :");
+  scanf("%c", &scelta);
+  while((getchar()) != '\n');
+  switch (scelta) {
+    case '1':
+  //  mappa=(struct Zona_Mappa *) calloc(num_giocatori, sizeof(struct Giocatore));
+        flag=1;
+      break;
+    case '2':
+        flag=1;
+      break;
+    case '3':
+        flag=1;
+      break;
+    casa '4':
+    flag=1;
+    break;
+    casa '5':
+    flag=1;
+    break;
+    casa '6':
+    flag=1;
+    break;
+    default:
+  printf("Valore errato \n");
+      break;
+    }
+  }while (flag!=1);
+
+
+}
