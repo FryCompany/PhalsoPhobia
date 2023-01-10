@@ -190,49 +190,20 @@ printf("Valore errato \n");
 }
 
 void inserisci_zona(){
-  char scelta;
-  int flag;
-  do{
-    flag=0;
-    scelta=0;
-  printf("Quale zona vuoi inserire  \n");
-  printf("1)Cucina  \n");
-  printf("2)Soggiorno  \n");
-  printf("3)Camera   \n");
-  printf("4)Bagno   \n");
-  printf("5)Garage   \n");
-  printf("6)Seminterrato   \n");
-
-  printf("Inserire la scelta :");
-  scanf("%c", &scelta);
-  while((getchar()) != '\n');
-  switch (scelta) {
-    case '1':
-   mappa=(struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));
-   mappa[0].zona=3;
-   printf("%u\n",mappa[0].zona );
-        flag=1;
-      break;
-    case '2':
-        flag=1;
-      break;
-    case '3':
-        flag=1;
-      break;
-    case '4':
-    flag=1;
-    break;
-    case '5':
-    flag=1;
-    break;
-    case '6':
-    flag=1;
-    break;
-    default:
-  printf("Valore errato \n");
-      break;
-    }
-  }while (flag!=1);
-
-
+  printf("Verra inserita una zona casuale  \n");
+    mappaNuova = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));
+     mappaNuova->prossima_zona= NULL;
+     mappaNuova->zona=rand()%7;
+   if( primaMappa== NULL) {// No node in the list
+   primaMappa = mappaNuova; // The first node is the newly created one
+   ultimaMappa = mappaNuova; // The last node is the newly created one
+ }
+   else
+   {
+   // Else, there is already at least one node in the list
+   ultimaMappa-> prossima_zona= mappaNuova; // the last node becomes the second one
+   ultimaMappa= mappaNuova; // The last node is the newly created one
+   ultimaMappa->prossima_zona=primaMappa;
+   }
+   printf("ecco l'ultima zona :%d\n",mappaNuova->zona );
 }

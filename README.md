@@ -11,3 +11,4 @@ Cognome:
 
 Matricola:
 
+Aggiunto un limite minimo di stanze da inserire 

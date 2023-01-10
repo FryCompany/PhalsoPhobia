@@ -22,7 +22,9 @@ static void imposta_oggetto_iniziale(int num_giocatori);
 static void  crea_mappa();
 static void inserisci_zona();
 static struct Giocatore* giocatori;
-static struct Zona_Mappa* mappa;
+static struct Zona_Mappa* mappaNuova;
+static struct Zona_Mappa* primaMappa;
+static struct Zona_Mappa* ultimaMappa;
 
 
 //enum
