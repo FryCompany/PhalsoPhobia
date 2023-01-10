@@ -32,6 +32,7 @@ do{
       }
     imposta_difficolta();
     imposta_oggetto_iniziale(num_giocatori);
+    crea_mappa();
     printf("Hai selezionato il numero di player \n");
     break;
 
@@ -148,6 +149,7 @@ for (int i = 0; i < num_giocatori; i++) {
 
 void crea_mappa(){
 char scelta;
+int flag;
 do{
   flag=0;
   scelta=0;
@@ -162,19 +164,19 @@ scanf("%c", &scelta);
 while((getchar()) != '\n');
 switch (scelta) {
   case '1':
-    void inserisci_zona();
+     inserisci_zona();
       flag=1;
     break;
   case '2':
-    void cancella_zona();
+//    void cancella_zona();
       flag=1;
     break;
   case '3':
-  void stampa_mappa();
+  //void stampa_mappa();
       flag=1;
     break;
-  casa '4':
-  void chiudi_mappa(); //inserire controllo se è stata inserita una zona
+  case '4':
+//  void chiudi_mappa(); //inserire controllo se è stata inserita una zona
   flag=1;
   break;
   default:
@@ -187,8 +189,9 @@ printf("Valore errato \n");
 
 }
 
-void inserisci zona(){
+void inserisci_zona(){
   char scelta;
+  int flag;
   do{
     flag=0;
     scelta=0;
@@ -205,7 +208,9 @@ void inserisci zona(){
   while((getchar()) != '\n');
   switch (scelta) {
     case '1':
-  //  mappa=(struct Zona_Mappa *) calloc(num_giocatori, sizeof(struct Giocatore));
+   mappa=(struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));
+   mappa[0].zona=3;
+   printf("%u\n",mappa[0].zona );
         flag=1;
       break;
     case '2':
@@ -214,13 +219,13 @@ void inserisci zona(){
     case '3':
         flag=1;
       break;
-    casa '4':
+    case '4':
     flag=1;
     break;
-    casa '5':
+    case '5':
     flag=1;
     break;
-    casa '6':
+    case '6':
     flag=1;
     break;
     default:

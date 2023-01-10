@@ -19,7 +19,8 @@ void imposta_gioco();
 static void imposta_nomi(int num_giocatori);
 static void imposta_difficolta();
 static void imposta_oggetto_iniziale(int num_giocatori);
-static void void crea_mappa();
+static void  crea_mappa();
+static void inserisci_zona();
 static struct Giocatore* giocatori;
 static struct Zona_Mappa* mappa;
 
