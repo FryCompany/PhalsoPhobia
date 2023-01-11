@@ -147,63 +147,125 @@ for (int i = 0; i < num_giocatori; i++) {
   }
 }
 
-void crea_mappa(){
-char scelta;
-int flag;
-do{
-  flag=0;
-  scelta=0;
-printf("Creazione mappa \n");
-printf("1) Inserisci una zona della mappa \n");
-printf("2) Cancella l'ultima zona inserita \n");
-printf("3) Stampa i campi della mappa  \n");
-printf("4) Fine della creazione della mappa  \n");
-
-printf("Inserire la scelta :");
-scanf("%c", &scelta);
-while((getchar()) != '\n');
-switch (scelta) {
-  case '1':
-     inserisci_zona();
-      flag=1;
-    break;
-  case '2':
-//    void cancella_zona();
-      flag=1;
-    break;
-  case '3':
-  //void stampa_mappa();
-      flag=1;
-    break;
-  case '4':
-//  void chiudi_mappa(); //inserire controllo se è stata inserita una zona
-  flag=1;
-  break;
-  default:
-printf("Valore errato \n");
-    break;
+  void crea_mappa(){
+    char scelta;
+    int flag1;
+    int flag=3;
+    printf("Verra inserite tre zone casuali(il minimo per poter giocare, puoi aggiungerne altre dal menu)  \n");
+    while(flag!=0){
+      flag=flag-1;
+      mappaNuova = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));
+      mappaNuova->prossima_zona= NULL;
+      mappaNuova->zona=rand()%7;
+      while( mappaNuova->zona ==0);
+      if( primaMappa== NULL) {// No node in the list
+        primaMappa = mappaNuova; // The first node is the newly created one
+        ultimaMappa = mappaNuova; // The last node is the newly created one
+      }
+      else
+      {
+ // Else, there is already at least one node in the list
+  ultimaMappa-> prossima_zona= mappaNuova; // the last node becomes the second one
+  ultimaMappa= mappaNuova; // The last node is the newly created one
+  ultimaMappa->prossima_zona=primaMappa;
   }
-}while (flag!=1);
+  printf("ecco l'ultima zona :%d\n",mappaNuova->zona );
+  }
 
+  do{
+    flag1=0;
+    scelta=0;
+    printf("Creazione mappa \n");
+    printf("1) Inserisci una zona della mappa \n");
+    printf("2) Cancella l'ultima zona inserita \n");
+    printf("3) Stampa i campi della mappa  \n");
+    printf("4) Fine della creazione della mappa  \n");
+    printf("Inserire la scelta :");
+    scanf("%c", &scelta);
+    while((getchar()) != '\n');
+    switch (scelta) {
+      case '1':
+      inserisci_zona();
+      break;
 
+      case '2':
+//    void cancella_zona();
+      break;
+
+      case '3':
+      stampa_mappa();
+      break;
+
+      case '4':
+  //  void chiudi_mappa(); //inserire controllo se è stata inserita una zona
+      flag1=1;
+      break;
+
+      default:
+      printf("Valore errato \n");
+      break;
+  }
+  }while (flag1!=1);
 
 }
 
 void inserisci_zona(){
-  printf("Verra inserita una zona casuale  \n");
     mappaNuova = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));
-     mappaNuova->prossima_zona= NULL;
-     mappaNuova->zona=rand()%7;
-   if( primaMappa== NULL) {// No node in the list
-   primaMappa = mappaNuova; // The first node is the newly created one
-   ultimaMappa = mappaNuova; // The last node is the newly created one
- }
-   else
-   {
-   // Else, there is already at least one node in the list
-   ultimaMappa-> prossima_zona= mappaNuova; // the last node becomes the second one
-   ultimaMappa= mappaNuova; // The last node is the newly created one
-   ultimaMappa->prossima_zona=primaMappa;
-   }
-   printf("ecco l'ultima zona :%d\n",mappaNuova->zona );
-}
+    mappaNuova->prossima_zona= NULL;
+    mappaNuova->zona=rand()%7;
+    while( mappaNuova->zona ==0); //effettuo un controllo per verificare che non esca 0 perche è il caravan e non  si puo creare un caravan
+    if( primaMappa== NULL) {// No node in the list
+      primaMappa = mappaNuova; // The first node is the newly created one
+      ultimaMappa = mappaNuova; // The last node is the newly created one
+    }
+    else
+    {
+      // Else, there is already at least one node in the list
+      ultimaMappa-> prossima_zona= mappaNuova; // the last node becomes the second one
+      ultimaMappa= mappaNuova; // The last node is the newly created one
+      ultimaMappa->prossima_zona=primaMappa;
+    }
+    printf("ecco l'ultima zona :%d\n",mappaNuova->zona );
+  }
+
+  void stampa_mappa(){
+    if(primaMappa == NULL) // No node in the list
+    {
+      printf("No node in the list!");
+    }
+    else
+    {
+      // New pointer used to scan the list.
+      stampaMappa = primaMappa;
+      do{
+        int tipo_zona;
+        tipo_zona=stampaMappa->zona;
+        switch (tipo_zona) {
+          case 1:
+          printf("Zona:Cucina\n" );
+          break;
+          case 2:
+          printf("Zona:Soggiorno\n");
+          break;
+          case 3:
+          printf("Zona:Camera\n");
+          break;
+          case 4:
+          printf("Zona:Bagno\n");
+          break;
+          case 5:
+          printf("Zona:Garage\n");
+          break;
+          case 6:
+          printf("Zona:Seminterrato\n");
+          break;
+          default:
+          printf("Errore \n" );
+          break;
+
+        }
+        stampaMappa = stampaMappa->prossima_zona;
+      }while(stampaMappa!= primaMappa); //NULL when this was the last node
+    }
+    
+    }
