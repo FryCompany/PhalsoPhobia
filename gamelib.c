@@ -33,7 +33,7 @@ do{
     imposta_difficolta();
     imposta_oggetto_iniziale(num_giocatori);
     crea_mappa();
-    printf("Hai selezionato il numero di player \n");
+    printf("Hai Impostato il gioco ora puoi giocare!!\n");
     break;
 
     default:
@@ -149,15 +149,15 @@ for (int i = 0; i < num_giocatori; i++) {
 
   void crea_mappa(){
     char scelta;
-    int flag1;
-    int flag=3;
+    int flag=3,flag1,flag2=0;
     printf("Verra inserite tre zone casuali(il minimo per poter giocare, puoi aggiungerne altre dal menu)  \n");
     while(flag!=0){
       flag=flag-1;
       mappaNuova = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));
       mappaNuova->prossima_zona= NULL;
+      do{
       mappaNuova->zona=rand()%7;
-      while( mappaNuova->zona ==0);
+        }while( mappaNuova->zona ==0);
       if( primaMappa== NULL) {// No node in the list
         primaMappa = mappaNuova; // The first node is the newly created one
         ultimaMappa = mappaNuova; // The last node is the newly created one
@@ -183,13 +183,14 @@ for (int i = 0; i < num_giocatori; i++) {
     printf("Inserire la scelta :");
     scanf("%c", &scelta);
     while((getchar()) != '\n');
+    //printf("\e[1;1H\e[2J \n" );
     switch (scelta) {
       case '1':
       inserisci_zona();
       break;
 
       case '2':
-//    void cancella_zona();
+     cancella_zona();
       break;
 
       case '3':
@@ -197,8 +198,11 @@ for (int i = 0; i < num_giocatori; i++) {
       break;
 
       case '4':
-  //  void chiudi_mappa(); //inserire controllo se è stata inserita una zona
-      flag1=1;
+      flag2=chiudi_mappa();
+      if(flag2==1){
+      printf("Non è presente il numero minimo di zone della mappa (Min3)\n");
+    }else{
+      flag1=1;}
       break;
 
       default:
@@ -211,12 +215,14 @@ for (int i = 0; i < num_giocatori; i++) {
 
 void inserisci_zona(){
     mappaNuova = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));
-    mappaNuova->prossima_zona= NULL;
+    mappaNuova->prossima_zona=NULL;
+    do{
     mappaNuova->zona=rand()%7;
-    while( mappaNuova->zona ==0); //effettuo un controllo per verificare che non esca 0 perche è il caravan e non  si puo creare un caravan
+      }while( mappaNuova->zona ==0); //effettuo un controllo per verificare che non esca 0 perche è il caravan e non  si puo creare un caravan
     if( primaMappa== NULL) {// No node in the list
       primaMappa = mappaNuova; // The first node is the newly created one
       ultimaMappa = mappaNuova; // The last node is the newly created one
+      primaMappa->prossima_zona=primaMappa;
     }
     else
     {
@@ -267,5 +273,50 @@ void inserisci_zona(){
         stampaMappa = stampaMappa->prossima_zona;
       }while(stampaMappa!= primaMappa); //NULL when this was the last node
     }
-    
+
     }
+
+    void cancella_zona(){
+      if(primaMappa == NULL)
+      printf("Non è presente nessuna zona della mappa!\n");
+      else {
+         penultimaMappa = NULL;
+         appoggioMappa = primaMappa;
+        if(appoggioMappa->prossima_zona == primaMappa) {// controllo se è l'ultimo della lista cioè il primo perchè la mappa e circolare
+          free(appoggioMappa); // Free memory
+          primaMappa= NULL; // Now the list is empty
+        }
+        else {// Otherwise, I need to scan the list until I find the last node (pLast)
+          do{
+            if((appoggioMappa-> prossima_zona) == ultimaMappa) {// Reached the node before the end
+              penultimaMappa = appoggioMappa;
+              break;
+            }
+            else
+            appoggioMappa= appoggioMappa-> prossima_zona; // Otherwise, I need to iterate
+          }while((appoggioMappa-> prossima_zona) != NULL);
+          free(penultimaMappa-> prossima_zona); // Free memory allocated to the last node
+          penultimaMappa-> prossima_zona = primaMappa; // imposto alla penultima zona la prima perchè è diventatal'ultima della lista
+          ultimaMappa = penultimaMappa; // pPrev becomes the last node
+        }
+      }
+
+
+    }
+
+  int chiudi_mappa(){
+    int num_mappa=0;
+    int flag=0;
+
+    conteggioMappa=primaMappa;
+    do{
+      num_mappa+=1;
+      conteggioMappa = conteggioMappa->prossima_zona;
+
+    }while(conteggioMappa!= primaMappa);
+    if (num_mappa<3) {
+      flag=1;
+    }
+
+    return flag;
+  }

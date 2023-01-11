@@ -11,4 +11,5 @@ Cognome:
 
 Matricola:
 
-Aggiunto un limite minimo di stanze da inserire 
+Aggiunto un limite minimo di stanze da inserire
+aggiunto il controllo nella funzione chiudi_mappa 
