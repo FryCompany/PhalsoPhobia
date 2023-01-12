@@ -1,7 +1,7 @@
 #include "gamelib.h"
 // Questo file continene solo la definizione della funzione main
 // con il menu principale 1-2-3
-
+int controllo=0;
 
 int main( ) {
   time_t t;
@@ -25,11 +25,14 @@ int flag=0;
     switch(scelta){
       case '1':
       printf("caso 1\n");
-      imposta_gioco();
+      controllo =imposta_gioco();
       break;
 
       case '2':
-
+      if(controllo==1){
+        //gioca();
+      }else
+      printf("Non hai ancora impostato il gioco!!!\n");
         printf("caso 2\n");
 
       break;

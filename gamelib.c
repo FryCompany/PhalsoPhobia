@@ -1,12 +1,36 @@
 #include "gamelib.h"
 
+//static
+static void imposta_nomi(int num_giocatori);
+static void imposta_difficolta();
+static void imposta_oggetto_iniziale(int num_giocatori);
+static void  crea_mappa();
+static void inserisci_zona();
+static void cancella_zona();
+static int chiudi_mappa();      //RICORDA DI METTERLI IN ORDINE DI CREAZIONE
+static void  stampa_mappa();
+static void  scegli_oggetto(int num_giocatori);
+
+
+static struct Giocatore* giocatori;
+static struct Zona_Mappa* mappaNuova;
+static struct Zona_Mappa* primaMappa;
+static struct Zona_Mappa* ultimaMappa;
+static struct Zona_Mappa* stampaMappa;
+static struct Zona_Mappa* appoggioMappa;
+static struct Zona_Mappa* penultimaMappa;
+static struct Zona_Mappa* conteggioMappa;
+
+
+int controllo_imposta=0;
+
 // comando : gcc  main.c gamelib.c
 // Definizioni delle funzioni in gamelib.c.
 // Piu altre funzioni di supporto.
 // Le funzioni richiamabili in main.c non devono essere static.
 // Le altre devono essere static (non visibili all'esterno).
 
-void imposta_gioco(){
+int imposta_gioco(){
   int num_giocatori;
   char scelta;
   int flag=0;
@@ -32,8 +56,11 @@ do{
       }
     imposta_difficolta();
     imposta_oggetto_iniziale(num_giocatori);
+    scegli_oggetto(num_giocatori);
     crea_mappa();
     printf("Hai Impostato il gioco ora puoi giocare!!\n");
+    controllo_imposta=1; //cambio il valore della variabile globare per poter iniziare a giocare
+
     break;
 
     default:
@@ -42,10 +69,10 @@ do{
     break;
   }
 }while(!flag);
-
+return controllo_imposta;
 }
 
-void imposta_nomi(int num_giocatori){
+static void imposta_nomi(int num_giocatori){
   int flag=0,flag2=0,i=0;
   char nomi[4][20];
   char appoggio[20];
@@ -86,7 +113,7 @@ void imposta_nomi(int num_giocatori){
 
 }
 
-void imposta_difficolta(){
+static void imposta_difficolta(){
   char input;
   int flag=0;
 do{
@@ -122,7 +149,7 @@ printf("Valore errato \n");
 
 
 }
-void imposta_oggetto_iniziale(int num_giocatori) {
+static void imposta_oggetto_iniziale(int num_giocatori) {
 int oggetto_iniziale;
 int flag=0;
 
@@ -146,8 +173,83 @@ for (int i = 0; i < num_giocatori; i++) {
         printf("ziano: %d\n", giocatori[giocatore_casuale].zaino[0]);
   }
 }
+void scegli_oggetto(int num_giocatori){
+  int turni[num_giocatori];
+  int temp=0,random_i,flag;
+  char input;
+  for (int i = 0; i < num_giocatori; i++) {
+      turni[i] = i;                            //nell'array vengono inseriti tutti i numeri da 0 a num_giocatori
+  }
+  for (int i = 0; i < num_giocatori; i++) {
+     temp = turni[i];
+     random_i = rand() % num_giocatori;
 
-  void crea_mappa(){
+    turni[i] = turni[random_i];             //le posizioni degli elementi vengono mescolate per creare i turni random
+    turni[random_i] = temp;
+ }
+ for (int i = 0; i < num_giocatori; i++) {
+   printf("ecco l'ordine %d\n",turni[i] );
+ }
+
+  for (int i = 0; i < num_giocatori; i++) {
+    do{
+      flag=0;
+      printf("Selezionare l'oggetto da inserire nello zaino tra :\n");
+      printf(" 1)EMF \n");
+      printf(" 2)Spirit Box \n");
+      printf(" 3)Videocamera \n");
+      printf(" 4)Calmanti \n");
+      printf(" 5)Sale \n");
+      printf(" 6)Adrenalina \n");
+      printf(" 7)Cento Dollari \n");
+      printf(" 8)Coltello \n");
+     printf("Giocatore %s scegli l'oggetto :", giocatori[turni[i]].nome);
+     scanf("%c", &input);
+     while((getchar()) != '\n');
+     switch (input) {
+        case '1':
+
+           flag=1;
+         break;
+        case '2':
+        
+
+             flag=1;
+           break;
+        case '3':
+
+               flag=1;
+             break;
+         case '4':
+
+                 flag=1;
+               break;
+         case '5':
+
+                   flag=1;
+                 break;
+          case '6':
+
+                     flag=1;
+                   break;
+          case '7':
+
+              flag=1;
+                     break;
+          case '8':
+
+                flag=1;
+                       break;
+         default:
+         printf("Valore errato \n");
+         break;
+         }
+       }while (flag!=1);
+                            //nell'array vengono inseriti tutti i numeri da 0 a num_giocatori
+   }
+ }
+
+static  void crea_mappa(){
     char scelta;
     int flag=3,flag1,flag2=0;
     printf("Verra inserite tre zone casuali(il minimo per poter giocare, puoi aggiungerne altre dal menu)  \n");
@@ -213,7 +315,7 @@ for (int i = 0; i < num_giocatori; i++) {
 
 }
 
-void inserisci_zona(){
+static void inserisci_zona(){
     mappaNuova = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));
     mappaNuova->prossima_zona=NULL;
     do{
@@ -304,7 +406,7 @@ void inserisci_zona(){
 
     }
 
-  int chiudi_mappa(){
+static int chiudi_mappa(){
     int num_mappa=0;
     int flag=0;
 

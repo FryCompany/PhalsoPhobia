@@ -12,28 +12,9 @@
 
 
 //funzioni
-void imposta_gioco();
+int imposta_gioco();
 
 
-//static
-static void imposta_nomi(int num_giocatori);
-static void imposta_difficolta();
-static void imposta_oggetto_iniziale(int num_giocatori);
-static void  crea_mappa();
-static void inserisci_zona();
-static void cancella_zona();
-static int chiudi_mappa();
-
-static struct Giocatore* giocatori;
-static struct Zona_Mappa* mappaNuova;
-static struct Zona_Mappa* primaMappa;
-static struct Zona_Mappa* ultimaMappa;
-static struct Zona_Mappa* stampaMappa;
-static struct Zona_Mappa* appoggioMappa;
-static struct Zona_Mappa* penultimaMappa;
-static struct Zona_Mappa* conteggioMappa;
-
-static void  stampa_mappa();
 
 
 //enum
