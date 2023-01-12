@@ -18,8 +18,8 @@ int imposta_gioco();
 
 
 //enum
-enum tipo_oggetto_iniziale {emf, spirit_box, videocamera, calmanti,sale};
-enum tipo_oggetto_zona {adrenalina,cento_dollari,coltello,nessun_oggetto};
+enum tipo_oggetto_iniziale {emf=0, spirit_box=1, videocamera=2, calmanti=3,sale=4};
+enum tipo_oggetto_zona {adrenalina=5,cento_dollari=6,coltello=7,nessun_oggetto=8};
 enum  tipo_zona{caravan,cucina,soggiorno,camera,bagno,garage,seminterrato};
 enum tipo_prova {prova_emf,prova_spirit_box,prova_videocamera,nessuna_prova};
 

@@ -10,6 +10,7 @@ static void cancella_zona();
 static int chiudi_mappa();      //RICORDA DI METTERLI IN ORDINE DI CREAZIONE
 static void  stampa_mappa();
 static void  scegli_oggetto(int num_giocatori);
+static void stampa_inventario(int num_giocatori);
 
 
 static struct Giocatore* giocatori;
@@ -21,7 +22,7 @@ static struct Zona_Mappa* appoggioMappa;
 static struct Zona_Mappa* penultimaMappa;
 static struct Zona_Mappa* conteggioMappa;
 
-
+int oggetti_morti[3]; // un array per gestire le prove di un giocatore morto
 int controllo_imposta=0;
 
 // comando : gcc  main.c gamelib.c
@@ -57,6 +58,7 @@ do{
     imposta_difficolta();
     imposta_oggetto_iniziale(num_giocatori);
     scegli_oggetto(num_giocatori);
+    stampa_inventario(num_giocatori);
     crea_mappa();
     printf("Hai Impostato il gioco ora puoi giocare!!\n");
     controllo_imposta=1; //cambio il valore della variabile globare per poter iniziare a giocare
@@ -126,6 +128,7 @@ printf("3) Incubo \n");
 printf("Inserire la scelta :");
 scanf("%c", &input);
 while((getchar()) != '\n');
+printf("\e[1;1H\e[2J \n" );
 switch (input) {
   case '1':
     printf("1) Dilettante \n");
@@ -195,58 +198,42 @@ void scegli_oggetto(int num_giocatori){
     do{
       flag=0;
       printf("Selezionare l'oggetto da inserire nello zaino tra :\n");
-      printf(" 1)EMF \n");
-      printf(" 2)Spirit Box \n");
-      printf(" 3)Videocamera \n");
-      printf(" 4)Calmanti \n");
-      printf(" 5)Sale \n");
-      printf(" 6)Adrenalina \n");
-      printf(" 7)Cento Dollari \n");
-      printf(" 8)Coltello \n");
+      printf(" 1)Adrenalina \n");
+      printf(" 2)Cento Dollari \n");
+      printf(" 3)Coltello \n");
+
      printf("Giocatore %s scegli l'oggetto :", giocatori[turni[i]].nome);
      scanf("%c", &input);
      while((getchar()) != '\n');
+     printf("\e[1;1H\e[2J \n" );
      switch (input) {
         case '1':
-
-           flag=1;
-         break;
+          giocatori[turni[i]].zaino[1]=adrenalina;//l'oggetto zero nello zaino viene generato casualmente
+          giocatori[turni[i]].zaino[2]=nessun_oggetto;//Imposto gli altri slot nello zaino nessun oggetto
+          giocatori[turni[i]].zaino[3]=nessun_oggetto;
+          flag=1;
+          break;
         case '2':
-        
-
-             flag=1;
-           break;
+          giocatori[turni[i]].zaino[1]=cento_dollari;
+          giocatori[turni[i]].zaino[2]=nessun_oggetto;
+          giocatori[turni[i]].zaino[3]=nessun_oggetto;
+          flag=1;
+          break;
         case '3':
+          giocatori[turni[i]].zaino[1]=coltello;
+          giocatori[turni[i]].zaino[2]=nessun_oggetto;
+          giocatori[turni[i]].zaino[3]=nessun_oggetto;
+          flag=1;
+          break;
 
-               flag=1;
-             break;
-         case '4':
-
-                 flag=1;
-               break;
-         case '5':
-
-                   flag=1;
-                 break;
-          case '6':
-
-                     flag=1;
-                   break;
-          case '7':
-
-              flag=1;
-                     break;
-          case '8':
-
-                flag=1;
-                       break;
          default:
-         printf("Valore errato \n");
+         printf("Valore errato, Riprova! \n");
          break;
          }
        }while (flag!=1);
-                            //nell'array vengono inseriti tutti i numeri da 0 a num_giocatori
+
    }
+
  }
 
 static  void crea_mappa(){
@@ -285,7 +272,7 @@ static  void crea_mappa(){
     printf("Inserire la scelta :");
     scanf("%c", &scelta);
     while((getchar()) != '\n');
-    //printf("\e[1;1H\e[2J \n" );
+    printf("\e[1;1H\e[2J \n" );
     switch (scelta) {
       case '1':
       inserisci_zona();
@@ -421,4 +408,47 @@ static int chiudi_mappa(){
     }
 
     return flag;
+  }
+  static void stampa_inventario(int num_giocatori){
+    int oggetto;
+      for (int i = 0; i < num_giocatori; i++) {
+        printf("Ecco gli elementi nello zaino di %s : \n",giocatori[i].nome);
+        for (int y = 0; y < 4; y++) {
+          oggetto=giocatori[i].zaino[y];
+        switch(oggetto){
+          case 0:
+          printf("•EMF \n");
+          break;
+          case 1:
+          printf("•Spirit Box \n");
+          break;
+          case 2:
+          printf("•Videocamera \n");
+          break;
+          case 3:
+          printf("•Calmanti  \n");
+          break;
+          case 4:
+          printf("•Sale \n");
+          break;
+          case 5:
+          printf("•Adrenalina \n");
+          break;
+          case 6:
+          printf("•Cento Dollari \n");
+          break;
+          case 7:
+          printf("•Coltello \n");
+          break;
+          case 8:
+          printf("•Nessun Oggetto\n" );
+          break;
+          default:
+          printf("•Errore\n");
+          break;
+        }
+      }
+      }
+
+
   }
