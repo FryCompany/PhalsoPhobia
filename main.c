@@ -12,7 +12,7 @@ int flag=0;
   do{
     scelta=0;
     flag=0;
-    //printf("\e[1;1H\e[2J \n" );
+    printf("\e[1;1H\e[2J \n" );
     printf("----------------\n");
     printf("||PhalsoPhobia||\n");
     printf("----------------\n");
@@ -21,7 +21,7 @@ int flag=0;
     printf("3)ESCI DAL GIOCO\n \n");
     printf("Cosa vuoi fare:");
     scanf("%c", &scelta);
-    while((getchar()) != '\n');
+
     switch(scelta){
       case '1':
       printf("caso 1\n");
@@ -46,8 +46,10 @@ int flag=0;
       printf( " Errore di inserimento \n");
 
       break;
-      printf("scelta: %c\n",scelta);
-  }
+
+
+}
+
 }while (flag!=1);
 
   }

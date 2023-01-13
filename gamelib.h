@@ -13,6 +13,8 @@
 
 //funzioni
 int imposta_gioco();
+void gioca(int num_giocatori);
+
 
 
 

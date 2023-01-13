@@ -13,6 +13,8 @@ static void  scegli_oggetto(int num_giocatori);
 static void stampa_inventario(int num_giocatori);
 
 
+
+
 static struct Giocatore* giocatori;
 static struct Zona_Mappa* mappaNuova;
 static struct Zona_Mappa* primaMappa;
@@ -21,9 +23,11 @@ static struct Zona_Mappa* stampaMappa;
 static struct Zona_Mappa* appoggioMappa;
 static struct Zona_Mappa* penultimaMappa;
 static struct Zona_Mappa* conteggioMappa;
+static struct Zona_Mappa* zonaCaravan;
 
 int oggetti_morti[3]; // un array per gestire le prove di un giocatore morto
-int controllo_imposta=0;
+int controllo_imposta=0,difficolta=0;
+
 
 // comando : gcc  main.c gamelib.c
 // Definizioni delle funzioni in gamelib.c.
@@ -31,15 +35,16 @@ int controllo_imposta=0;
 // Le funzioni richiamabili in main.c non devono essere static.
 // Le altre devono essere static (non visibili all'esterno).
 
+
 int imposta_gioco(){
   int num_giocatori;
-  char scelta;
+  char scelta=0;
   int flag=0;
 do{
 
   printf("Inserire il numero di giocatori(Min 1,Max 4): ");
   scanf("%c",&scelta);
-  while((getchar()) != '\n');
+
 
   switch (scelta) {
     printf("%d\n",num_giocatori );
@@ -61,6 +66,7 @@ do{
     stampa_inventario(num_giocatori);
     crea_mappa();
     printf("Hai Impostato il gioco ora puoi giocare!!\n");
+    sleep(2);
     controllo_imposta=1; //cambio il valore della variabile globare per poter iniziare a giocare
 
     break;
@@ -70,9 +76,9 @@ do{
     sleep(1);
     break;
   }
-}while(!flag);
-return controllo_imposta;
-}
+  }while(!flag);
+  return controllo_imposta;
+  }
 
 static void imposta_nomi(int num_giocatori){
   int flag=0,flag2=0,i=0;
@@ -131,20 +137,20 @@ while((getchar()) != '\n');
 printf("\e[1;1H\e[2J \n" );
 switch (input) {
   case '1':
-    printf("1) Dilettante \n");
-      flag=1;
+    difficolta=1;
+    flag=1;
     break;
   case '2':
-    printf("2) Intermedio \n");
-      flag=1;
+    difficolta=2;
+    flag=1;
     break;
   case '3':
-    printf("3) Incubo \n");
-      flag=1;
+    difficolta=3;
+    flag=1;
     break;
-  default:
-printf("Valore errato \n");
 
+   default:
+   printf("Valore errato \n");
     break;
   }
 }while (flag!=1);
@@ -163,7 +169,6 @@ for (int i = 0; i < num_giocatori; i++) {
   if (oggetto_iniziale<=2) { //controllo se e' stato generato almeno un oggetto neccessario
     flag=1;
   }
-  printf("ziano: %d\n", giocatori[i].zaino[0]);
   }
 
 
@@ -172,8 +177,6 @@ for (int i = 0; i < num_giocatori; i++) {
       int oggetto_necessario=rand()%3;             //se non viene inserito un oggetto per raccogliere le prove
       int giocatore_casuale=rand()%num_giocatori+1;//viene imposto ad un giocatore casuale
       giocatori[giocatore_casuale].zaino[0]=oggetto_necessario;
-      printf("Il valore necesa è stato inserito \n");
-        printf("ziano: %d\n", giocatori[giocatore_casuale].zaino[0]);
   }
 }
 void scegli_oggetto(int num_giocatori){
@@ -190,9 +193,7 @@ void scegli_oggetto(int num_giocatori){
     turni[i] = turni[random_i];             //le posizioni degli elementi vengono mescolate per creare i turni random
     turni[random_i] = temp;
  }
- for (int i = 0; i < num_giocatori; i++) {
-   printf("ecco l'ordine %d\n",turni[i] );
- }
+
 
   for (int i = 0; i < num_giocatori; i++) {
     do{
@@ -239,7 +240,10 @@ void scegli_oggetto(int num_giocatori){
 static  void crea_mappa(){
     char scelta;
     int flag=3,flag1,flag2=0;
-    printf("Verra inserite tre zone casuali(il minimo per poter giocare, puoi aggiungerne altre dal menu)  \n");
+    printf("Verranno inserite tre zone casuali(il minimo per poter giocare, puoi aggiungerne altre dal menu)  \n");
+    zonaCaravan = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));//creo la zona di memoria per il caravan
+    zonaCaravan->prossima_zona=NULL; //prossima zona la imposto a null perche e una zona distaccata dalla mappa di gioco
+    zonaCaravan->zona=0;
     while(flag!=0){
       flag=flag-1;
       mappaNuova = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));
@@ -258,7 +262,6 @@ static  void crea_mappa(){
   ultimaMappa= mappaNuova; // The last node is the newly created one
   ultimaMappa->prossima_zona=primaMappa;
   }
-  printf("ecco l'ultima zona :%d\n",mappaNuova->zona );
   }
 
   do{
@@ -320,13 +323,12 @@ static void inserisci_zona(){
       ultimaMappa= mappaNuova; // The last node is the newly created one
       ultimaMappa->prossima_zona=primaMappa;
     }
-    printf("ecco l'ultima zona :%d\n",mappaNuova->zona );
   }
 
   void stampa_mappa(){
     if(primaMappa == NULL) // No node in the list
     {
-      printf("No node in the list!");
+      printf("Non è presente nessuna zona della mappa! \n");
     }
     else
     {
@@ -450,5 +452,35 @@ static int chiudi_mappa(){
       }
       }
 
-
   }
+void  gioca(int num_giocatori){
+    int turni[num_giocatori];
+    int temp=0,random_i,flag,possibila_prova;
+    char input;
+    for (int i = 0; i < num_giocatori; i++) {
+      giocatori[i].posizione=primaMappa; //imposto tutti i giocatori presenti nella mappa iniziale
+    }
+
+    for (int i = 0; i < num_giocatori; i++) {
+        turni[i] = i;                            //nell'array vengono inseriti tutti i numeri da 0 a num_giocatori
+    }
+    for (int i = 0; i < num_giocatori; i++) {
+       temp = turni[i];
+       random_i = rand() % num_giocatori;
+
+      turni[i] = turni[random_i];             //le posizioni degli elementi vengono mescolate per creare i turni random
+      turni[random_i] = temp;
+   }
+possibila_prova=rand()%100;
+switch (possibila_prova) {
+  case 0 ... 39:
+  break;
+}
+
+
+
+
+   printf("Giocatore s cosa vuoi fare :\n");
+
+
+    }
