@@ -9,7 +9,7 @@
 
 
 
-
+int num_giocatori;
 
 //funzioni
 int imposta_gioco();

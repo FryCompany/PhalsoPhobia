@@ -15,6 +15,7 @@ static void stampa_inventario(int num_giocatori);
 
 
 
+
 static struct Giocatore* giocatori;
 static struct Zona_Mappa* mappaNuova;
 static struct Zona_Mappa* primaMappa;
@@ -29,6 +30,7 @@ int oggetti_morti[3]; // un array per gestire le prove di un giocatore morto
 int controllo_imposta=0,difficolta=0;
 
 
+
 // comando : gcc  main.c gamelib.c
 // Definizioni delle funzioni in gamelib.c.
 // Piu altre funzioni di supporto.
@@ -37,13 +39,13 @@ int controllo_imposta=0,difficolta=0;
 
 
 int imposta_gioco(){
-  int num_giocatori;
   char scelta=0;
   int flag=0;
 do{
 
   printf("Inserire il numero di giocatori(Min 1,Max 4): ");
   scanf("%c",&scelta);
+  while((getchar()) != '\n');
 
 
   switch (scelta) {
@@ -455,8 +457,8 @@ static int chiudi_mappa(){
   }
 void  gioca(int num_giocatori){
     int turni[num_giocatori];
-    int temp=0,random_i,flag,possibila_prova;
-    char input;
+    int temp=0,random_i,flag,possibila_prova,stampa_zona,fantasma=0,flag1;
+    char input,scelta;
     for (int i = 0; i < num_giocatori; i++) {
       giocatori[i].posizione=primaMappa; //imposto tutti i giocatori presenti nella mappa iniziale
     }
@@ -471,16 +473,74 @@ void  gioca(int num_giocatori){
       turni[i] = turni[random_i];             //le posizioni degli elementi vengono mescolate per creare i turni random
       turni[random_i] = temp;
    }
-possibila_prova=rand()%100;
+/*possibila_prova=rand()%100;
 switch (possibila_prova) {
   case 0 ... 39:
   break;
-}
+}*/
+  do{
+  for (int i = 0; i < num_giocatori; i++) {
 
+   printf("Giocatore %s cosa vuoi fare :\n",giocatori[turni[i]].nome);
+   printf("1)Torna al caravan\n");
+   printf("2)Stampa i valori della zona in cui ti trovi  \n");
+   printf("3)Raccogli Prova \n");
+   printf("4)Raccogli Oggetto \n");
+   printf("5)Usa Oggetto \n");
+   printf("6)Fine Turno \n");
+   printf("Inserire la scelta: ");
+   scanf("%c",&scelta);
+// while((getchar()) != '\n');
+   switch (scelta) {
+     case '1':
+     if(fantasma==0){
+       giocatori[turni[i]].posizione=zonaCaravan;
+     }
+     break;
+     case '2':
+     printf("Ecco dove ti trovi:\n");
+     stampaMappa=giocatori[turni[i]].posizione;
+     stampa_zona=stampaMappa->zona;
+     switch (stampa_zona) {
+       case 1:
+       printf("Zona:Cucina\n" );
+       break;
+       case 2:
+       printf("Zona:Soggiorno\n");
+       break;
+       case 3:
+       printf("Zona:Camera\n");
+       break;
+       case 4:
+       printf("Zona:Bagno\n");
+       break;
+       case 5:
+       printf("Zona:Garage\n");
+       break;
+       case 6:
+       printf("Zona:Seminterrato\n");
+       break;
+       default:
+       printf("Errore \n" );
+       break;
+     }
+     break;
+     case '3':
+     //raccogli_prova();
+     break;
+     case '4':
+     //raccogli_oggetto();
+     break;
+     case '5':
+     //usa_oggetto();
+     break;
+     case '6':
+     flag1=1;
+     break;
+   }
+ }
+}while(flag1!=1);
 
-
-
-   printf("Giocatore s cosa vuoi fare :\n");
 
 
     }
