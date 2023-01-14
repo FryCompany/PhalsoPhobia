@@ -23,7 +23,7 @@ void gioca(int num_giocatori);
 enum tipo_oggetto_iniziale {emf=0, spirit_box=1, videocamera=2, calmanti=3,sale=4};
 enum tipo_oggetto_zona {adrenalina=5,cento_dollari=6,coltello=7,nessun_oggetto=8};
 enum  tipo_zona{caravan,cucina,soggiorno,camera,bagno,garage,seminterrato};
-enum tipo_prova {prova_emf,prova_spirit_box,prova_videocamera,nessuna_prova};
+enum tipo_prova {prova_emf=9,prova_spirit_box=10,prova_videocamera=11,nessuna_prova=12};
 
 
 //struct

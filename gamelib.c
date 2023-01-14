@@ -10,7 +10,7 @@ static void cancella_zona();
 static int chiudi_mappa();      //RICORDA DI METTERLI IN ORDINE DI CREAZIONE
 static void  stampa_mappa();
 static void  scegli_oggetto(int num_giocatori);
-static void stampa_inventario(int num_giocatori);
+static void stampa_inventario(int p);
 static void menu_scelte(int p);
 static void torna_caravan(int p);
 static void stampa_info_p(int p);
@@ -80,7 +80,7 @@ do{
     imposta_difficolta();
     imposta_oggetto_iniziale(num_giocatori);
     scegli_oggetto(num_giocatori);
-    stampa_inventario(num_giocatori);
+
     crea_mappa();
     printf("Hai Impostato il gioco ora puoi giocare!!\n");
     sleep(2);
@@ -428,12 +428,11 @@ static int chiudi_mappa(){
 
     return flag;
   }
-  static void stampa_inventario(int num_giocatori){
-    int oggetto;
-      for (int i = 0; i < num_giocatori; i++) {
-        printf("Ecco gli elementi nello zaino di %s : \n",giocatori[i].nome);
+  static void stampa_inventario(int p){
+        int oggetto;
+        printf("Ecco gli elementi nello zaino di %s : \n",giocatori[p].nome);
         for (int y = 0; y < 4; y++) {
-          oggetto=giocatori[i].zaino[y];
+          oggetto=giocatori[p].zaino[y];
         switch(oggetto){
           case 0:
           printf("•EMF \n");
@@ -469,7 +468,7 @@ static int chiudi_mappa(){
       }
       }
 
-  }
+
 void  gioca(int num_giocatori){
     int turni[num_giocatori];
     int temp=0,random_i,flag,possibila_prova,stampa_zona,fantasma=0,flag1;
@@ -481,6 +480,11 @@ void  gioca(int num_giocatori){
     for (int i = 0; i < num_giocatori; i++) {
         turni[i] = i;                            //nell'array vengono inseriti tutti i numeri da 0 a num_giocatori
     }
+
+   int p=0;
+   primaMappa->prova=nessuna_prova;
+   primaMappa->oggetto_zona=coltello; //AL primo turno non puo' esserci ne una prova ne un oggetto
+  do{
     for (int i = 0; i < num_giocatori; i++) {
        temp = turni[i];
        random_i = rand() % num_giocatori;
@@ -488,14 +492,8 @@ void  gioca(int num_giocatori){
       turni[i] = turni[random_i];             //le posizioni degli elementi vengono mescolate per creare i turni random
       turni[random_i] = temp;
    }
-   for(int i=0;i<num_giocatori;i++){
-
-      printf("ecco i turni :%d \n",turni[i]);
-   }
-
-int p=0;
-do{
   for (int i = 0; i < num_giocatori; i++) {
+
     if (turni[i]==0) {
       p=0;
       menu_scelte(p);
@@ -523,7 +521,10 @@ do{
 
     }
  void menu_scelte(int p){
+   int flag=0;
+   do{
    char scelta;
+   printf("\n");
    printf("Giocatore %s cosa vuoi fare :\n",giocatori[p].nome);
    printf("1)Torna al caravan\n");
    printf("2)Stampa le info del giocatore\n");
@@ -541,7 +542,7 @@ do{
      // torna_caravan();
      break;
      case '2':
-     //stampa_info_p();
+     stampa_info_p(p);
      break;
      case '3':
      stampa_info_z(p);
@@ -550,19 +551,19 @@ do{
      //avanza();
      break;
      case '5':
-     //raccogli_prova();
+     raccogli_prova(p);
      break;
      case '6':
-     //raccogli_oggetto();
+     raccogli_oggetto(p);
      break;
      case '7':
      //usa_oggetto();
      break;
      case '8':
-
+     flag=1;
      break;
    }
-
+ }while(flag!=1);
 
  }
 void torna_caravan(int p){
@@ -621,16 +622,16 @@ switch (stampa_oggetti_Mappa) {
 }
 stampa_prova_Mappa=stampaMappa->prova;
 switch (stampa_prova_Mappa) {
-  case 0:
+  case 9:
   printf("•Prova EMF \n");
   break;
-  case 1:
+  case 10:
   printf("•Prova Spirit Box \n");
   break;
-  case 2:
+  case 11:
   printf("•Prova Videocamera \n");
   break;
-  case 3:
+  case 12:
   printf("•Nessuna Prova \n" );
   break;
   default:
@@ -639,3 +640,80 @@ switch (stampa_prova_Mappa) {
 
 }
 }
+  void stampa_info_p(int p){
+  printf("\e[1;1H\e[2J \n" );
+  printf("Nome: %s\n",giocatori[p].nome );
+  printf("Sanita Mentale: %u\n",giocatori[p].sanita_mentale);
+  stampa_inventario(p);
+  }
+
+
+
+  void raccogli_prova(int p ){
+    int oggetto,flag=0;
+    appoggioMappa=NULL;
+    appoggioMappa=giocatori[p].posizione;
+    for (int y = 0; y < 4; y++) {
+      oggetto=giocatori[p].zaino[y];
+      switch (oggetto) {
+        case 0:
+        flag=1;
+        if(appoggioMappa->prova==9){
+          printf("Hai racolto la prova EMF \n");
+          giocatori[p].zaino[y]=prova_emf;
+        }else{
+          printf("Non è presente nessuna prova!! \n");
+        }
+        break;
+        case 1:
+        flag=1;
+        if(appoggioMappa->prova==10){
+          printf("Hai racolto la prova Spirit Box \n");
+          giocatori[p].zaino[y]=prova_spirit_box;
+        }else{
+          printf("Non è presente nessuna prova!! \n");
+        }
+        break;
+        case 2:
+        flag=1;
+        if(appoggioMappa->prova==11){
+          printf("Hai racolto la prova Videocamera \n");
+          giocatori[p].zaino[y]=prova_videocamera;
+        }else{
+          printf("Non è presente nessuna prova!! \n");
+        }
+        break;
+
+      }
+      }
+      if(flag==0){
+        printf("Non possiedi l'oggetto necessario per raccogliere la prova \n" );
+        }
+      }
+      void raccogli_oggetto(int p ){
+        int oggetto,flag=0;
+        appoggioMappa=NULL;
+        appoggioMappa=giocatori[p].posizione;
+        for (int y = 0; y < 4; y++) {
+          oggetto=giocatori[p].zaino[y];
+          switch (oggetto) {
+            case 8:
+            flag=1;
+            if(appoggioMappa->oggetto_zona!=8){
+              printf("Hai racolto l'oggetto presente nella zona \n");
+              giocatori[p].zaino[y]=appoggioMappa->oggetto_zona;
+              appoggioMappa->oggetto_zona=nessun_oggetto;
+              flag=2;
+            }else{
+              printf("Non è presente nessuna oggetto raccoglibile!! \n");
+            }
+            break;
+          }
+          if (flag==2) {
+            y=4;
+          }
+          }
+          if(flag==0){
+            printf("Zaino pieno\n" );
+            }
+          }
