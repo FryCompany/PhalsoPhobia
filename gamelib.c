@@ -11,6 +11,19 @@ static int chiudi_mappa();      //RICORDA DI METTERLI IN ORDINE DI CREAZIONE
 static void  stampa_mappa();
 static void  scegli_oggetto(int num_giocatori);
 static void stampa_inventario(int num_giocatori);
+static void menu_scelte(int p);
+static void torna_caravan(int p);
+static void stampa_info_p(int p);
+static void stampa_info_z(int p);
+static void avanza(int p);
+static void raccogli_prova(int p);
+static void raccogli_oggetto(int p);
+static void usa_oggetto(int p);
+static void passa(int p);
+
+
+
+
 
 
 
@@ -25,6 +38,8 @@ static struct Zona_Mappa* appoggioMappa;
 static struct Zona_Mappa* penultimaMappa;
 static struct Zona_Mappa* conteggioMappa;
 static struct Zona_Mappa* zonaCaravan;
+//static struct Zona_Mappa* stampa_oggetti_Mappa;
+//static struct Zona_Mappa* stampa_prova_Mappa;
 
 int oggetti_morti[3]; // un array per gestire le prove di un giocatore morto
 int controllo_imposta=0,difficolta=0;
@@ -208,7 +223,7 @@ void scegli_oggetto(int num_giocatori){
      printf("Giocatore %s scegli l'oggetto :", giocatori[turni[i]].nome);
      scanf("%c", &input);
      while((getchar()) != '\n');
-     printf("\e[1;1H\e[2J \n" );
+  //   printf("\e[1;1H\e[2J \n" );
      switch (input) {
         case '1':
           giocatori[turni[i]].zaino[1]=adrenalina;//l'oggetto zero nello zaino viene generato casualmente
@@ -277,7 +292,7 @@ static  void crea_mappa(){
     printf("Inserire la scelta :");
     scanf("%c", &scelta);
     while((getchar()) != '\n');
-    printf("\e[1;1H\e[2J \n" );
+  //  printf("\e[1;1H\e[2J \n" );
     switch (scelta) {
       case '1':
       inserisci_zona();
@@ -458,7 +473,7 @@ static int chiudi_mappa(){
 void  gioca(int num_giocatori){
     int turni[num_giocatori];
     int temp=0,random_i,flag,possibila_prova,stampa_zona,fantasma=0,flag1;
-    char input,scelta;
+    char input;
     for (int i = 0; i < num_giocatori; i++) {
       giocatori[i].posizione=primaMappa; //imposto tutti i giocatori presenti nella mappa iniziale
     }
@@ -473,74 +488,154 @@ void  gioca(int num_giocatori){
       turni[i] = turni[random_i];             //le posizioni degli elementi vengono mescolate per creare i turni random
       turni[random_i] = temp;
    }
-/*possibila_prova=rand()%100;
-switch (possibila_prova) {
-  case 0 ... 39:
-  break;
-}*/
-  do{
-  for (int i = 0; i < num_giocatori; i++) {
+   for(int i=0;i<num_giocatori;i++){
 
-   printf("Giocatore %s cosa vuoi fare :\n",giocatori[turni[i]].nome);
-   printf("1)Torna al caravan\n");
-   printf("2)Stampa i valori della zona in cui ti trovi  \n");
-   printf("3)Raccogli Prova \n");
-   printf("4)Raccogli Oggetto \n");
-   printf("5)Usa Oggetto \n");
-   printf("6)Fine Turno \n");
-   printf("Inserire la scelta: ");
-   scanf("%c",&scelta);
-// while((getchar()) != '\n');
-   switch (scelta) {
-     case '1':
-     if(fantasma==0){
-       giocatori[turni[i]].posizione=zonaCaravan;
-     }
-     break;
-     case '2':
-     printf("Ecco dove ti trovi:\n");
-     stampaMappa=giocatori[turni[i]].posizione;
-     stampa_zona=stampaMappa->zona;
-     switch (stampa_zona) {
-       case 1:
-       printf("Zona:Cucina\n" );
-       break;
-       case 2:
-       printf("Zona:Soggiorno\n");
-       break;
-       case 3:
-       printf("Zona:Camera\n");
-       break;
-       case 4:
-       printf("Zona:Bagno\n");
-       break;
-       case 5:
-       printf("Zona:Garage\n");
-       break;
-       case 6:
-       printf("Zona:Seminterrato\n");
-       break;
-       default:
-       printf("Errore \n" );
-       break;
-     }
-     break;
-     case '3':
-     //raccogli_prova();
-     break;
-     case '4':
-     //raccogli_oggetto();
-     break;
-     case '5':
-     //usa_oggetto();
-     break;
-     case '6':
-     flag1=1;
-     break;
+      printf("ecco i turni :%d \n",turni[i]);
    }
- }
-}while(flag1!=1);
+
+int p=0;
+do{
+  for (int i = 0; i < num_giocatori; i++) {
+    if (turni[i]==0) {
+      p=0;
+      menu_scelte(p);
+    }
+    if (turni[i]==1) {
+      p=1;
+      menu_scelte(p);
+    }
+    if (turni[i]==2) {
+      p=2;
+      menu_scelte(p);
+    }
+    if (turni[i]==3) {
+      p=3;
+      menu_scelte(p);
+    }
+    if (turni[i]==4) {
+      p=4;
+      menu_scelte(p);
+    }
+}
+}while(1); //il gioco si ripete finche i giocatori perdono o vincono
 
 
 
     }
+ void menu_scelte(int p){
+   char scelta;
+   printf("Giocatore %s cosa vuoi fare :\n",giocatori[p].nome);
+   printf("1)Torna al caravan\n");
+   printf("2)Stampa le info del giocatore\n");
+   printf("3)Stampa i valori della zona in cui ti trovi  \n");
+   printf("4)Avanza\n");
+   printf("5)Raccogli Prova \n");
+   printf("6)Raccogli Oggetto \n");
+   printf("7)Usa Oggetto \n");
+   printf("8)Fine Turno \n");
+   printf("Inserire la scelta: ");
+   scanf("%c",&scelta);
+   while((getchar()) != '\n');
+   switch (scelta) {
+     case '1':
+     // torna_caravan();
+     break;
+     case '2':
+     //stampa_info_p();
+     break;
+     case '3':
+     stampa_info_z(p);
+     break;
+     case '4':
+     //avanza();
+     break;
+     case '5':
+     //raccogli_prova();
+     break;
+     case '6':
+     //raccogli_oggetto();
+     break;
+     case '7':
+     //usa_oggetto();
+     break;
+     case '8':
+
+     break;
+   }
+
+
+ }
+void torna_caravan(int p){
+  giocatori[p].posizione=zonaCaravan;
+
+}
+
+
+
+void stampa_info_z(int p){
+int stampa_zona,stampa_oggetti_Mappa,stampa_prova_Mappa;
+printf("Ecco dove ti trovi:\n");
+stampaMappa=giocatori[p].posizione;
+stampa_zona=stampaMappa->zona;
+switch (stampa_zona) {
+  case 1:
+  printf("Zona:Cucina\n" );
+  break;
+  case 2:
+  printf("Zona:Soggiorno\n");
+  break;
+  case 3:
+  printf("Zona:Camera\n");
+  break;
+  case 4:
+  printf("Zona:Bagno\n");
+  break;
+  case 5:
+  printf("Zona:Garage\n");
+  break;
+  case 6:
+  printf("Zona:Seminterrato\n");
+  break;
+  default:
+  printf("Errore \n" );
+  break;
+}
+stampa_oggetti_Mappa=stampaMappa->oggetto_zona;
+switch (stampa_oggetti_Mappa) {
+  case 5:
+  printf("•Adrenalina \n");
+  break;
+  case 6:
+  printf("•Cento Dollari \n");
+  break;
+  case 7:
+  printf("•Coltello \n");
+  break;
+  case 8:
+  printf("•Nessun Oggetto\n" );
+  break;
+  default:
+  printf("•Errore\n");
+  break;
+
+}
+stampa_prova_Mappa=stampaMappa->prova;
+switch (stampa_prova_Mappa) {
+  case 0:
+  printf("•Prova EMF \n");
+  break;
+  case 1:
+  printf("•Prova Spirit Box \n");
+  break;
+  case 2:
+  printf("•Prova Videocamera \n");
+  break;
+  case 3:
+  printf("•Nessuna Prova \n" );
+  break;
+  default:
+  printf("•Errore\n");
+  break;
+
+}
+}
