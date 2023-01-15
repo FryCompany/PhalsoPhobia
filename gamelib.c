@@ -557,7 +557,7 @@ void  gioca(int num_giocatori){
      raccogli_oggetto(p);
      break;
      case '7':
-     //usa_oggetto();
+     usa_oggetto(p);
      break;
      case '8':
      flag=1;
@@ -604,13 +604,13 @@ switch (stampa_zona) {
 stampa_oggetti_Mappa=stampaMappa->oggetto_zona;
 switch (stampa_oggetti_Mappa) {
   case 5:
-  printf("•Adrenalina \n");
+  printf("•E' presente una siringa di Adrenalina \n");
   break;
   case 6:
-  printf("•Cento Dollari \n");
+  printf("•Sono presenti Cento Dollari \n");
   break;
   case 7:
-  printf("•Coltello \n");
+  printf("•E' presente un Coltello \n");
   break;
   case 8:
   printf("•Nessun Oggetto\n" );
@@ -623,13 +623,13 @@ switch (stampa_oggetti_Mappa) {
 stampa_prova_Mappa=stampaMappa->prova;
 switch (stampa_prova_Mappa) {
   case 9:
-  printf("•Prova EMF \n");
+  printf("•E' presente una Prova EMF \n");
   break;
   case 10:
-  printf("•Prova Spirit Box \n");
+  printf("•E' presente una Prova Spirit Box \n");
   break;
   case 11:
-  printf("•Prova Videocamera \n");
+  printf("•E' presente una Prova Videocamera \n");
   break;
   case 12:
   printf("•Nessuna Prova \n" );
@@ -706,14 +706,82 @@ switch (stampa_prova_Mappa) {
               flag=2;
             }else{
               printf("Non è presente nessuna oggetto raccoglibile!! \n");
+              y=4;//se non e presente nessuno oggetto esce subito dal ciclo for
             }
             break;
           }
           if (flag==2) {
-            y=4;
+            y=4; //se l'oggetto è stato raccolto esce subito dal ciclo for
           }
           }
           if(flag==0){
             printf("Zaino pieno\n" );
             }
           }
+
+        void usa_oggetto(int p){
+          char scelta;
+          int oggetto,contatore=0;
+          for (int y = 0; y < 4; y++) {
+            oggetto=giocatori[p].zaino[y];
+          switch(oggetto){
+            case 8:
+            contatore=contatore+1;
+            break;
+          }
+        }
+        if(contatore==4){
+          printf("Il tuo zaino è vuoto \n");
+        }else{
+          printf("Quale oggetto vuoi usare: \n");
+          for(int i=0;i< 4; i++){
+            if(giocatori[p].zaino[i]==calmanti){
+              printf("%d)Calmanti \n",i);
+          }
+          if(giocatori[p].zaino[i]==sale){
+            printf("%d)Sale \n",i);
+          }
+          if(giocatori[p].zaino[i]==adrenalina){
+            printf("%d)Adrenalina \n",i);
+          }
+          if(giocatori[p].zaino[i]==cento_dollari){
+            printf("%d)Cento Dollari \n",i);
+          }
+          if(giocatori[p].zaino[i]==coltello){
+            printf("%d)Coltello \n",i);
+          }
+
+        }
+        do{
+        printf("Inserire la scelta:");
+        scanf("%c", &scelta);
+        while((getchar()) != '\n');
+        switch (scelta) {
+          case '0':
+          switch (giocatori[p].zaino[0]) {
+            case 3:
+              if(giocatori[p].sanita_mentale==100){
+                printf("Hai la sanita mentale massima \n");
+                }else{
+                if(giocatori[p].sanita_mentale>=60){
+                giocatori[p].sanita_mentale=100;// se la sanita mentale e maggiore o uguale a 60
+                                                //viene impostata la sanita mentale massima
+              }else{
+                giocatori[p].sanita_mentale+=40;
+              }
+                giocatori[p].zaino[0]=8; //rimuovo l'oggetto utilizzato
+              }
+              break;
+              case 4:
+              //da completare
+              break;
+            }
+
+          }
+          break;
+        }while (1);
+
+
+
+        }
+        }
