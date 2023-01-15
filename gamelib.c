@@ -18,7 +18,7 @@ static void stampa_info_z(int p);
 static void avanza(int p);
 static void raccogli_prova(int p);
 static void raccogli_oggetto(int p);
-static void usa_oggetto(int p);
+static void usa_oggetto(int p,int num_giocatori);
 static void passa(int p);
 
 
@@ -557,7 +557,7 @@ void  gioca(int num_giocatori){
      raccogli_oggetto(p);
      break;
      case '7':
-     usa_oggetto(p);
+     usa_oggetto(p,num_giocatori);
      break;
      case '8':
      flag=1;
@@ -719,9 +719,9 @@ switch (stampa_prova_Mappa) {
             }
           }
 
-        void usa_oggetto(int p){
-          char scelta;
-          int oggetto,contatore=0;
+        void usa_oggetto(int p,int num_giocatori){
+          char scelta=0;
+          int oggetto,contatore=0,g=0,contatore2=0,flag;
           for (int y = 0; y < 4; y++) {
             oggetto=giocatori[p].zaino[y];
           switch(oggetto){
@@ -733,33 +733,22 @@ switch (stampa_prova_Mappa) {
         if(contatore==4){
           printf("Il tuo zaino è vuoto \n");
         }else{
+          do{
           printf("Quale oggetto vuoi usare: \n");
-          for(int i=0;i< 4; i++){
-            if(giocatori[p].zaino[i]==calmanti){
-              printf("%d)Calmanti \n",i);
-          }
-          if(giocatori[p].zaino[i]==sale){
-            printf("%d)Sale \n",i);
-          }
-          if(giocatori[p].zaino[i]==adrenalina){
-            printf("%d)Adrenalina \n",i);
-          }
-          if(giocatori[p].zaino[i]==cento_dollari){
-            printf("%d)Cento Dollari \n",i);
-          }
-          if(giocatori[p].zaino[i]==coltello){
-            printf("%d)Coltello \n",i);
-          }
-
-        }
-        do{
-        printf("Inserire la scelta:");
-        scanf("%c", &scelta);
-        while((getchar()) != '\n');
-        switch (scelta) {
-          case '0':
-          switch (giocatori[p].zaino[0]) {
-            case 3:
+              printf("[C]per i calmanti \n");
+              printf("[S]per il sale \n");
+              printf("[A]per l'adrenalina \n");
+              printf("[D]per i cento dollari \n");
+              printf("[X]per il coltello \n");
+              printf("Inserire la scelta:");
+              scanf("%c", &scelta);
+              while((getchar()) != '\n');
+              switch (scelta) {
+          case 'C':
+          case 'c':
+              contatore=0;
+              for(int i;i<4;i++){
+                if(giocatori[p].zaino[i]==calmanti){
               if(giocatori[p].sanita_mentale==100){
                 printf("Hai la sanita mentale massima \n");
                 }else{
@@ -769,19 +758,97 @@ switch (stampa_prova_Mappa) {
               }else{
                 giocatori[p].sanita_mentale+=40;
               }
-                giocatori[p].zaino[0]=8; //rimuovo l'oggetto utilizzato
+                giocatori[p].zaino[i]=8; //rimuovo l'oggetto utilizzato
+              }
+            }else{
+            contatore2=contatore2+1;
+            }
+              }
+              if(contatore2==4){
+                printf("Non possiedi l'oggetto nello zaino \n");
               }
               break;
-              case 4:
-              //da completare
+              case 'S':
+              case 's':
+              contatore2=0;
+              for(int i;i<4;i++){
+                if(giocatori[p].zaino[i]==sale){
+                  //da completare
+              }else{
+                contatore2=contatore2+1;
+              }
+              }
+              if(contatore2==4){
+                printf("Non possiedi l'oggetto nello zaino \n");
+              }
+              break;
+              case 'A':
+              case 'a':
+              contatore2=0;
+              for(int i=0;i<4;i++){
+                if(giocatori[p].zaino[i]==adrenalina){
+                  //da completare
+              }else{
+                contatore2=contatore2+1;
+              }
+              }
+              if(contatore2==4){
+                printf("Non possiedi l'oggetto nello zaino \n");
+              }
+              break;
+              case 'D':
+              case 'd':
+              contatore2=0;
+              printf("CIaoo \n");
+              for(int i=0;i<4;i++){
+                if(giocatori[p].zaino[i]==cento_dollari){
+                  g=rand()%2;
+                  if(g==0){
+                    giocatori[p].zaino[i]=sale;
+                    printf("Hai ricevuto del sale \n");
+                  }else{
+                    giocatori[p].zaino[i]=calmanti;
+                    printf("Hai ricevuto un calmante\n");
+                  }
+              }else{
+                contatore2=contatore2+1;
+              }
+              }
+              if(contatore==4){
+                printf("Non possiedi l'oggetto nello zaino \n");
+              }
+              break;
+              case 'X':
+              case 'x':
+              contatore2=0;
+              for(int i=0;i<4;i++){
+                if(giocatori[p].zaino[i]==coltello){
+                  if(giocatori[p].sanita_mentale<30){
+                  for (int i = 0; i < num_giocatori; i++) {
+                    if(memcmp(&giocatori[p],&giocatori[i], sizeof(struct Giocatore)) != 0){
+                      if(giocatori[i].posizione==giocatori[p].posizione){
+                        giocatori[i].sanita_mentale=0;// Il giocatore è morto
+                      }
+                    }
+                  }
+                }else{
+                  printf("Non puoi usare questo oggetto!! \n");
+                }
+              }else{
+                contatore2=contatore2+1;
+              }
+              }
+              if(contatore2==4){
+                printf("Non possiedi l'oggetto nello zaino \n");
+              }
+              break;
+              default:
+              printf("Valore errato \n");
+              flag=1;
               break;
             }
 
-          }
-          break;
-        }while (1);
 
-
-
+        }while (flag==1);
         }
-        }
+      }
