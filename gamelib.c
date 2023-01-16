@@ -721,7 +721,7 @@ switch (stampa_prova_Mappa) {
 
         void usa_oggetto(int p,int num_giocatori){
           char scelta=0;
-          int oggetto,contatore=0,g=0,contatore2=0,flag;
+          int oggetto,contatore=0,g=0,contatore2=0,flag=0,flag2=0;
           for (int y = 0; y < 4; y++) {
             oggetto=giocatori[p].zaino[y];
           switch(oggetto){
@@ -747,8 +747,9 @@ switch (stampa_prova_Mappa) {
           case 'C':
           case 'c':
               contatore=0;
-              for(int i;i<4;i++){
+              for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==calmanti){
+                  flag2=1;
               if(giocatori[p].sanita_mentale==100){
                 printf("Hai la sanita mentale massima \n");
                 }else{
@@ -763,6 +764,9 @@ switch (stampa_prova_Mappa) {
             }else{
             contatore2=contatore2+1;
             }
+            if(flag2==1){ // se il giocatore ha due oggetti uguali se ne utilizza uno solo
+              i=4;        // è quindi si esce dal ciclo che controllo lo zaino del giocatore
+            }
               }
               if(contatore2==4){
                 printf("Non possiedi l'oggetto nello zaino \n");
@@ -771,7 +775,7 @@ switch (stampa_prova_Mappa) {
               case 'S':
               case 's':
               contatore2=0;
-              for(int i;i<4;i++){
+              for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==sale){
                   //da completare
               }else{
@@ -799,7 +803,7 @@ switch (stampa_prova_Mappa) {
               case 'D':
               case 'd':
               contatore2=0;
-              printf("CIaoo \n");
+
               for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==cento_dollari){
                   g=rand()%2;
@@ -814,7 +818,7 @@ switch (stampa_prova_Mappa) {
                 contatore2=contatore2+1;
               }
               }
-              if(contatore==4){
+              if(contatore2==4){
                 printf("Non possiedi l'oggetto nello zaino \n");
               }
               break;
@@ -823,6 +827,7 @@ switch (stampa_prova_Mappa) {
               contatore2=0;
               for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==coltello){
+
                   if(giocatori[p].sanita_mentale<30){
                   for (int i = 0; i < num_giocatori; i++) {
                     if(memcmp(&giocatori[p],&giocatori[i], sizeof(struct Giocatore)) != 0){
