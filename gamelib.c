@@ -41,8 +41,8 @@ static struct Zona_Mappa* zonaCaravan;
 //static struct Zona_Mappa* stampa_oggetti_Mappa;
 //static struct Zona_Mappa* stampa_prova_Mappa;
 
-int oggetti_morti[3]; // un array per gestire le prove di un giocatore morto
-int controllo_imposta=0,difficolta=0;
+int oggetti_morti[4]; // un array per gestire le prove di un giocatore morto
+int controllo_imposta=0,difficolta=0,avanza_counter=1;;
 
 
 
@@ -461,6 +461,15 @@ static int chiudi_mappa(){
           case 8:
           printf("•Nessun Oggetto\n" );
           break;
+          case 9:
+          printf("•Prova EMF\n" );
+          break;
+          case 10:
+          printf("•Prova Spirit Box\n" );
+          break;
+          case 11:
+          printf("•Prova Videocamera \n" );
+          break;
           default:
           printf("•Errore\n");
           break;
@@ -521,7 +530,7 @@ void  gioca(int num_giocatori){
 
     }
  void menu_scelte(int p){
-   int flag=0;
+   int flag=0,usa_sale=0;
    do{
    char scelta;
    printf("\n");
@@ -548,7 +557,12 @@ void  gioca(int num_giocatori){
      stampa_info_z(p);
      break;
      case '4':
-     //avanza();
+     if(avanza_counter>=1){
+       avanza_counter=avanza_counter-1;
+     avanza(p);
+   }else{
+     printf("Non puoi più avanzare \n");
+    }
      break;
      case '5':
      raccogli_prova(p);
@@ -561,6 +575,7 @@ void  gioca(int num_giocatori){
      break;
      case '8':
      flag=1;
+     avanza_counter=1; //Imposto la variabile uguale ad uno cosi il prossimo player puo avanzare
      break;
    }
  }while(flag!=1);
@@ -649,7 +664,7 @@ switch (stampa_prova_Mappa) {
 
 
 
-  void raccogli_prova(int p ){
+  void raccogli_prova(int p){
     int oggetto,flag=0;
     appoggioMappa=NULL;
     appoggioMappa=giocatori[p].posizione;
@@ -789,11 +804,17 @@ switch (stampa_prova_Mappa) {
               case 'A':
               case 'a':
               contatore2=0;
+              flag2=0;
               for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==adrenalina){
-                  //da completare
+                  flag2=1;
+                  avanza_counter=avanza_counter+1;
+                  giocatori[p].zaino[i]=nessun_oggetto;
               }else{
                 contatore2=contatore2+1;
+              }
+              if(flag2==1){
+                i=4;
               }
               }
               if(contatore2==4){
@@ -856,4 +877,49 @@ switch (stampa_prova_Mappa) {
 
         }while (flag==1);
         }
+      }
+
+      void avanza(int p){
+        int prova_spawn=0,oggetto_spawn=0;
+        prova_spawn=rand()%100;
+        oggetto_spawn=rand()%100;
+        appoggioMappa=giocatori[p].posizione;
+        appoggioMappa=appoggioMappa->prossima_zona;
+        giocatori[p].posizione=appoggioMappa;
+        printf("\e[1;1H\e[2J \n" );
+        printf("Stai attento ai fantasmi..\n");
+        switch (prova_spawn) {
+          case 0 ... 39:
+          printf("Non è apparsa nessuna prova\n");
+          appoggioMappa->prova=nessuna_prova;
+          break;
+          case 40 ... 59:
+          printf( "E' apparsa la prova videocamera \n");
+          appoggioMappa->prova=prova_videocamera;
+          break;
+          case 60 ... 79:
+          printf( "E' apparsa la prova Spirit Box \n");
+          appoggioMappa->prova=prova_spirit_box;
+          break;
+          case 80 ... 99:
+          printf( "E' apparsa la prova EMF \n");
+          appoggioMappa->prova=prova_emf;
+          break;
+        }
+        switch (oggetto_spawn) {
+          case 0 ... 69:
+          appoggioMappa->oggetto_zona=nessun_oggetto;
+          break;
+          case 70 ... 79:
+          appoggioMappa->oggetto_zona=adrenalina;
+          break;
+          case 80 ... 89:
+          appoggioMappa->oggetto_zona=cento_dollari;
+          break;
+          case 90 ... 99:
+          appoggioMappa->oggetto_zona=coltello;
+          break;
+        }
+
+
       }
