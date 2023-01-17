@@ -32,6 +32,7 @@ struct Giocatore{
   unsigned char sanita_mentale;
   struct Zona_Mappa* posizione;
   unsigned char zaino[4];
+  int stato;
 };
 
 struct Zona_Mappa{
