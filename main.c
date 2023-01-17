@@ -12,7 +12,7 @@ int flag=0;
   do{
     scelta=0;
     flag=0;
-  //  printf("\e[1;1H\e[2J \n" );
+    printf("\e[1;1H\e[2J \n" );
     printf("----------------\n");
     printf("||PhalsoPhobia||\n");
     printf("----------------\n");
@@ -24,7 +24,7 @@ int flag=0;
     while((getchar()) != '\n');
     switch(scelta){
       case '1':
-      printf("caso 1\n");
+
       controllo =imposta_gioco();
       break;
 
@@ -33,12 +33,12 @@ int flag=0;
         gioca(num_giocatori);
       }else
       printf("Non hai ancora impostato il gioco!!!\n");
-        printf("caso 2\n");
+
 
       break;
 
       case '3':
-      printf("caso 3\n");
+      //dealloca 
        flag=1;
       break;
 
