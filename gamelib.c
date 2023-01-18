@@ -42,6 +42,7 @@ static struct Zona_Mappa* zonaCaravan;
 
 int oggetti_morti[4]; // un array per gestire le prove di un giocatore morto
 int controllo_imposta=0,difficolta=0,avanza_counter=1;
+int prova1_trovata=0,prova2_trovata=0,prova3_trovata=0;
 
 
 
@@ -591,41 +592,52 @@ void  gioca(int num_giocatori){
      break;
    }
  }while(flag!=1);
-
+int somma=0;
  }
 void torna_caravan(int p){
-  int prova1_trovata=0,prova2_trovata=0,prova3_trovata=0;
-  char scelta=NULL;
+  int somma=0,pos_prova=0;
+  printf("\e[1;1H\e[2J \n" );
   printf("Complimenti sei riuscito a tornare al caravan sano e salvo \n");
   for(int i=0;i<4;i++){
     if(giocatori[p].zaino[i]==prova_emf){
-      prova1_trovata=i;
+      prova1_trovata=1;
+      pos_prova=i;
     }
     if(giocatori[p].zaino[i]==prova_spirit_box){
-      prova2_trovata=i;
+      prova2_trovata=1;
+      pos_prova=i;
+
     }
     if(giocatori[p].zaino[i]==prova_videocamera){
-      prova3_trovata=i;
+      prova3_trovata=1;
+      pos_prova=i;
     }
-    //Da rifare non mi piace come lo stavo facendo!!!
-    }
-    if(prova1_trovata!=0 || prova2_trovata!=0 || prova3_trovata!=0){
-      printf("Scegli cosa prendere dal caravan \n");
-      printf("1)EMF\n");
-      printf("2)Spirit Box\n");
-      printf("3)Videocamera\n");
-      printf("Inserire la scelta :\n");
-      scanf("%c",&scelta);
-      switch (scelta) {
-        case '1':
-        break;
-        case '2':
-        break;
-        case '3':
-        break;
+    somma=prova1_trovata+prova2_trovata+prova3_trovata;
+    if(somma==1){
+      if(prova1_trovata==1){
+        giocatori[p].zaino[pos_prova]=spirit_box;
+      }
+      if(prova2_trovata==1){
+        giocatori[p].zaino[pos_prova]=videocamera;
+      }
+      if(prova3_trovata==1){
+        giocatori[p].zaino[pos_prova]=emf;
       }
     }
-  }
+    if(somma==2){
+      if(prova1_trovata==1 ||prova2_trovata ==1){
+        giocatori[p].zaino[pos_prova]=videocamera;
+      }
+      if(prova2_trovata==1 || prova3_trovata==1){
+        giocatori[p].zaino[pos_prova]=emf;
+      }
+      if(prova1_trovata==1 || prova3_trovata==1){
+        giocatori[p].zaino[pos_prova]=spirit_box;
+      }
+    }
+    }
+    }
+
 
 
 
