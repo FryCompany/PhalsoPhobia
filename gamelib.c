@@ -43,7 +43,7 @@ static struct Zona_Mappa* zonaCaravan;
 int oggetti_morti[4]; // un array per gestire le prove di un giocatore morto
 int controllo_imposta=0,difficolta=0,avanza_counter=1;
 int prova1_trovata=0,prova2_trovata=0,prova3_trovata=0;
-
+int somma=0;
 
 
 
@@ -57,6 +57,7 @@ int prova1_trovata=0,prova2_trovata=0,prova3_trovata=0;
 int imposta_gioco(){
   char scelta=0;
   int flag=0;
+  printf("\e[1;1H\e[2J \n" );
 do{
 
   printf("Inserire il numero di giocatori(Min 1,Max 4): ");
@@ -104,6 +105,7 @@ static void imposta_nomi(int num_giocatori){
   char nomi[4][20];
   char appoggio[20];
   for(i=0;i<num_giocatori;i++){
+    printf("\e[1;1H\e[2J \n" );
     do{
     flag=0;
     flag2=0;
@@ -115,6 +117,7 @@ static void imposta_nomi(int num_giocatori){
   for (int f = 0; giocatori[i].nome[f] != '\0'; f++) {
       if (!((giocatori[i].nome[f] >= 'A' && giocatori[i].nome[f] <= 'Z') || (giocatori[i].nome[f] >= 'a' && giocatori[i].nome[f] <= 'z'))) {
           printf("Il nome non puo' contenere numeri o caratteri speciali \n");
+          sleep(1);
           flag=1;
         break;
         }
@@ -129,6 +132,7 @@ static void imposta_nomi(int num_giocatori){
       for (int y = 0; y < num_giocatori; y++)
           if ((strcmp(nomi[y], giocatori[i].nome) == 0) && y!=i) {
             printf("Nome gia' inserito , Reinseriscilo  \n");
+            sleep(1);
             flag=1;
             break;
 
@@ -143,6 +147,7 @@ static void imposta_nomi(int num_giocatori){
 static void imposta_difficolta(){
   char input;
   int flag=0;
+  printf("\e[1;1H\e[2J \n" );
 do{
   flag=0;
   input=0;
@@ -170,6 +175,7 @@ switch (input) {
 
    default:
    printf("Valore errato \n");
+   sleep(1);
     break;
   }
 }while (flag!=1);
@@ -219,8 +225,10 @@ void scegli_oggetto(int num_giocatori){
 
 
   for (int i = 0; i < num_giocatori; i++) {
+    printf("\e[1;1H\e[2J \n" );
     do{
       flag=0;
+
       printf("Selezionare l'oggetto da inserire nello zaino tra :\n");
       printf(" 1)Adrenalina \n");
       printf(" 2)Cento Dollari \n");
@@ -229,7 +237,7 @@ void scegli_oggetto(int num_giocatori){
      printf("Giocatore %s scegli l'oggetto :", giocatori[turni[i]].nome);
      scanf("%c", &input);
      while((getchar()) != '\n');
-  //   printf("\e[1;1H\e[2J \n" );
+     printf("\e[1;1H\e[2J \n" );
      switch (input) {
         case '1':
           giocatori[turni[i]].zaino[1]=adrenalina;//l'oggetto zero nello zaino viene generato casualmente
@@ -246,6 +254,7 @@ void scegli_oggetto(int num_giocatori){
 
          default:
          printf("Valore errato, Riprova! \n");
+         sleep(1);
          break;
          }
          giocatori[turni[i]].zaino[2]=nessun_oggetto;//Imposto gli altri slot nello zaino nessun oggetto
@@ -259,10 +268,8 @@ void scegli_oggetto(int num_giocatori){
 static  void crea_mappa(){
     char scelta;
     int flag=3,flag1,flag2=0;
+    printf("\e[1;1H\e[2J \n" );
     printf("Verranno inserite tre zone casuali(il minimo per poter giocare, puoi aggiungerne altre dal menu)  \n");
-    zonaCaravan = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));//creo la zona di memoria per il caravan
-    zonaCaravan->prossima_zona=NULL; //prossima zona la imposto a null perche e una zona distaccata dalla mappa di gioco
-    zonaCaravan->zona=0;
     while(flag!=0){
       flag=flag-1;
       mappaNuova = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));
@@ -322,6 +329,12 @@ static  void crea_mappa(){
   }
   }while (flag1!=1);
 
+  zonaCaravan = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));//creo la zona di memoria per il caravan
+  zonaCaravan->prossima_zona=primaMappa; //prossima zona la imposto la prima
+  zonaCaravan->zona=caravan;
+  zonaCaravan->oggetto_zona=nessun_oggetto;
+  zonaCaravan->prova=nessuna_prova;
+
 }
 
 static void inserisci_zona(){
@@ -345,6 +358,7 @@ static void inserisci_zona(){
   }
 
   void stampa_mappa(){
+    printf("\e[1;1H\e[2J \n" );
     if(primaMappa == NULL) // No node in the list
     {
       printf("Non è presente nessuna zona della mappa! \n");
@@ -357,6 +371,7 @@ static void inserisci_zona(){
         int tipo_zona;
         tipo_zona=stampaMappa->zona;
         switch (tipo_zona) {
+
           case 1:
           printf("Zona:Cucina\n" );
           break;
@@ -387,6 +402,7 @@ static void inserisci_zona(){
     }
 
     void cancella_zona(){
+      printf("\e[1;1H\e[2J \n" );
       if(primaMappa == NULL)
       printf("Non è presente nessuna zona della mappa!\n");
       else {
@@ -432,6 +448,7 @@ static int chiudi_mappa(){
   }
   static void stampa_inventario(int p){
         int oggetto;
+        printf("\e[1;1H\e[2J \n" );
         printf("Ecco gli elementi nello zaino di %s : \n",giocatori[p].nome);
         for (int y = 0; y < 4; y++) {
           oggetto=giocatori[p].zaino[y];
@@ -481,6 +498,7 @@ static int chiudi_mappa(){
 
 
 void  gioca(int num_giocatori){
+  printf("\e[1;1H\e[2J \n" );
     int turni[num_giocatori];
     int temp=0,random_i,flag,possibila_prova,stampa_zona,fantasma=0,flag1;
     char input;
@@ -595,9 +613,10 @@ void  gioca(int num_giocatori){
 int somma=0;
  }
 void torna_caravan(int p){
-  int somma=0,pos_prova=0;
+  int pos_prova=0;
   printf("\e[1;1H\e[2J \n" );
   printf("Complimenti sei riuscito a tornare al caravan sano e salvo \n");
+  giocatori[p].posizione=zonaCaravan;
   for(int i=0;i<4;i++){
     if(giocatori[p].zaino[i]==prova_emf){
       prova1_trovata=1;
@@ -613,6 +632,7 @@ void torna_caravan(int p){
       pos_prova=i;
     }
     somma=prova1_trovata+prova2_trovata+prova3_trovata;
+    printf("%d\n",somma);
     if(somma==1){
       if(prova1_trovata==1){
         giocatori[p].zaino[pos_prova]=spirit_box;
@@ -625,13 +645,13 @@ void torna_caravan(int p){
       }
     }
     if(somma==2){
-      if(prova1_trovata==1 ||prova2_trovata ==1){
+      if(prova1_trovata==1 && prova2_trovata ==1){
         giocatori[p].zaino[pos_prova]=videocamera;
       }
-      if(prova2_trovata==1 || prova3_trovata==1){
+      if(prova2_trovata==1 && prova3_trovata==1){
         giocatori[p].zaino[pos_prova]=emf;
       }
-      if(prova1_trovata==1 || prova3_trovata==1){
+      if(prova1_trovata==1 && prova3_trovata==1){
         giocatori[p].zaino[pos_prova]=spirit_box;
       }
     }
@@ -643,10 +663,14 @@ void torna_caravan(int p){
 
 void stampa_info_z(int p){
 int stampa_zona,stampa_oggetti_Mappa,stampa_prova_Mappa;
+printf("\e[1;1H\e[2J \n" );
 printf("Ecco dove ti trovi:\n");
 stampaMappa=giocatori[p].posizione;
 stampa_zona=stampaMappa->zona;
 switch (stampa_zona) {
+  case 0:
+  printf("Zona:Caravan\n");
+  break;
   case 1:
   printf("Zona:Cucina\n" );
   break;
