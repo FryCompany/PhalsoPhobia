@@ -370,9 +370,11 @@ static void inserisci_zona(){
     }
     else
     {
-      // New pointer used to scan the list.
+
+      // uso un puntatore per stampare la mappa
       stampaMappa = primaMappa;
       do{
+        printf("ecco :%p\n",stampaMappa);
         int tipo_zona;
         tipo_zona=stampaMappa->zona;
         switch (tipo_zona) {
@@ -400,8 +402,9 @@ static void inserisci_zona(){
           break;
 
         }
+
         stampaMappa = stampaMappa->prossima_zona;
-      }while(stampaMappa!= primaMappa); //NULL when this was the last node
+      }while(stampaMappa!= primaMappa);
     }
 
     }
@@ -504,7 +507,7 @@ static int chiudi_mappa(){
 void  gioca(int num_giocatori){
   printf("\e[1;1H\e[2J \n" );
     int turni[num_giocatori];
-    int temp=0,random_i,flag,possibila_prova,stampa_zona,fantasma=0,flag1;
+    int temp=0,random_i,flag,possibila_prova,stampa_zona,fantasma=0,flag1,flagfinale=0;
     char input;
     for (int i = 0; i < num_giocatori; i++) {
       giocatori[i].posizione=primaMappa; //imposto tutti i giocatori presenti nella mappa iniziale
@@ -518,6 +521,12 @@ void  gioca(int num_giocatori){
    primaMappa->prova=nessuna_prova;
    primaMappa->oggetto_zona=nessun_oggetto; //AL primo turno non puo' esserci ne una prova ne un oggetto
   do{
+    if(raccolta_emf==1 && raccolta_spirit==1 && raccolta_video==1)
+    {
+      flagfinale=1;
+      printf("Vittoria \n" );
+      sleep(3);
+    }else{
 
     for (int i = 0; i < num_giocatori; i++) {
        temp = turni[i];
@@ -549,7 +558,8 @@ void  gioca(int num_giocatori){
     }
 
 }
-}while(1); //il gioco si ripete finche i giocatori perdono o vincono
+}
+}while(flagfinale==0); //il gioco si ripete finche i giocatori perdono o vincono
 
 
 
@@ -636,7 +646,6 @@ void torna_caravan(int p){
       pos_prova=i;
     }
     somma=prova1_trovata+prova2_trovata+prova3_trovata;
-    printf("%d\n",somma);
     if(somma==1){
       if(prova1_trovata==1){
         giocatori[p].zaino[pos_prova]=spirit_box;
@@ -1555,13 +1564,19 @@ switch (stampa_prova_Mappa) {
 
 
       }
-      static void deallocalista(){ //funzione che scorre la lista stanze e dealloca la memoria allocata
+      static void deallocalista(){
+        int flag=1;                            //funzione che scorre la lista stanze e dealloca la memoria allocata
         free(giocatori);//dealloco la memoria allocata per l'array di giocatori
         free(zonaCaravan);//dealloco la zona del caravan perchè non trovandosi nella lista la devo liberare a parte
         conteggioMappa= primaMappa;
-        while (conteggioMappa != primaMappa) { //da aggiustare 
+        while (flag) {
           struct Zona_Mappa* appoggio = conteggioMappa;
           conteggioMappa = conteggioMappa->prossima_zona;
+          if(conteggioMappa==primaMappa){
+            flag=0;
+          }
           free(appoggio);  //dealloco le zone dalla mappa
+
         }
+
       }
