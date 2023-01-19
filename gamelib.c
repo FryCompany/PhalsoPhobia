@@ -20,6 +20,7 @@ static int raccogli_prova(int p);
 static void raccogli_oggetto(int p);
 static void usa_oggetto(int p,int num_giocatori);
 static void passa(int p);
+static void deallocalista();
 
 
 
@@ -40,11 +41,10 @@ static struct Zona_Mappa* conteggioMappa;
 static struct Zona_Mappa* zonaCaravan;
 
 
-int oggetti_morti[4]; // un array per gestire le prove di un giocatore morto
+
 int controllo_imposta=0,difficolta=0,avanza_counter=1;
 int prova1_trovata=0,prova2_trovata=0,prova3_trovata=0;
-int somma=0;
-
+int somma1=0,raccolta_emf=0,raccolta_spirit=0,raccolta_video=0;
 
 
 // comando : gcc  main.c gamelib.c
@@ -55,6 +55,9 @@ int somma=0;
 
 
 int imposta_gioco(){
+  if(controllo_imposta==1){
+    deallocalista(); //se il giocatore
+  }                 // vuole reimpostare il gioco devo deallocare le cose allocate prima
   char scelta=0;
   int flag=0;
   printf("\e[1;1H\e[2J \n" );
@@ -76,6 +79,7 @@ do{
     flag=1;
     giocatori=(struct Giocatore *) calloc(num_giocatori, sizeof(struct Giocatore));
     imposta_nomi(num_giocatori);
+
     for(int i=0;i<num_giocatori;i++){
         giocatori[i].sanita_mentale=100;//imposto per  ogni giocatore la sanita mentale massima
         giocatori[i].stato=1; //imposto per ogni giocatore lo stato 1 cioè vivo
@@ -155,6 +159,7 @@ printf("Selezionare la difficolta :\n");
 printf("1) Dilettante \n");
 printf("2) Intermedio \n");
 printf("3) Incubo \n");
+printf("ecco :%p\n",(void*) &giocatori[0]);
 printf("Inserire la scelta :");
 scanf("%c", &input);
 while((getchar()) != '\n');
@@ -448,7 +453,6 @@ static int chiudi_mappa(){
   }
   static void stampa_inventario(int p){
         int oggetto;
-        printf("\e[1;1H\e[2J \n" );
         printf("Ecco gli elementi nello zaino di %s : \n",giocatori[p].nome);
         for (int y = 0; y < 4; y++) {
           oggetto=giocatori[p].zaino[y];
@@ -610,10 +614,10 @@ void  gioca(int num_giocatori){
      break;
    }
  }while(flag!=1);
-int somma=0;
+
  }
 void torna_caravan(int p){
-  int pos_prova=0;
+  int pos_prova=0,somma=0;
   printf("\e[1;1H\e[2J \n" );
   printf("Complimenti sei riuscito a tornare al caravan sano e salvo \n");
   giocatori[p].posizione=zonaCaravan;
@@ -742,7 +746,7 @@ switch (stampa_prova_Mappa) {
 
 
   int raccogli_prova(int p){
-    int oggetto,flag=0,raccolta_emf=0,raccolta_spirit=0,raccolta_video=0,spawn_fantasma=0,somma=0,fantasma=0;
+    int oggetto,flag=0,spawn_fantasma=0,fantasma=0;
     appoggioMappa=NULL;
     appoggioMappa=giocatori[p].posizione;
     for (int y = 0; y < 4; y++) {
@@ -754,16 +758,16 @@ switch (stampa_prova_Mappa) {
           printf("Hai racolto la prova EMF \n");
           giocatori[p].zaino[y]=prova_emf;
           raccolta_emf=1;
-          somma=raccolta_emf+raccolta_spirit+raccolta_video;
+          somma1=raccolta_emf+raccolta_spirit+raccolta_video;
           switch (difficolta) {
             case 1:
               spawn_fantasma=rand()%100;
-                if(somma==1){
+                if(somma1==1){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 30:
                   fantasma=1;
-                  printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n");
+                  printf("BOOO ANDATEVENE DA CASA MIA..\n");
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -773,12 +777,12 @@ switch (stampa_prova_Mappa) {
                   break;
                 }
                 }
-                if(somma==2){
+                if(somma1==2){
                   spawn_fantasma=rand()%100;
                   switch (spawn_fantasma) {
                     case 0 ... 40:
                     fantasma=1;
-                    printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE\n" );
+                    printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n" );
                     appoggioMappa=giocatori[p].posizione;
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
@@ -788,12 +792,12 @@ switch (stampa_prova_Mappa) {
                     break;
                   }
                 }
-                if(somma==3){
+                if(somma1==3){
                   spawn_fantasma=rand()%100;
                   switch (spawn_fantasma) {
                     case 0 ... 60:
                     fantasma=1;
-                    printf("LA TUA PROSSIMA SCELTA POTREBBE ESSERE FATALE \n");
+                    printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE \n");
                     appoggioMappa=giocatori[p].posizione;
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
@@ -810,12 +814,12 @@ switch (stampa_prova_Mappa) {
             break;
             case 2:
             spawn_fantasma=rand()%100;
-              if(somma==1){
+              if(somma1==1){
               spawn_fantasma=rand()%100;
               switch (spawn_fantasma) {
                 case 0 ... 40:
                 fantasma=1;
-                printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n");
+                printf("BOOO ANDATEVENE DA CASA MIA..\n");
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
@@ -825,12 +829,12 @@ switch (stampa_prova_Mappa) {
                 break;
               }
               }
-              if(somma==2){
+              if(somma1==2){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 50:
                   fantasma=1;
-                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE\n" );
+                  printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n" );
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -840,12 +844,12 @@ switch (stampa_prova_Mappa) {
                   break;
                 }
               }
-              if(somma==3){
+              if(somma1==3){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 70:
                   fantasma=1;
-                  printf("LA TUA PROSSIMA SCELTA POTREBBE ESSERE FATALE \n");
+                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE \n");
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -859,12 +863,12 @@ switch (stampa_prova_Mappa) {
             break;
             case 3:
             spawn_fantasma=rand()%100;
-              if(somma==1){
+              if(somma1==1){
               spawn_fantasma=rand()%100;
               switch (spawn_fantasma) {
                 case 0 ... 50:
                 fantasma=1;
-                printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n");
+                printf("BOOO ANDATEVENE DA CASA MIA..\n");
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
@@ -874,12 +878,12 @@ switch (stampa_prova_Mappa) {
                 break;
               }
               }
-              if(somma==2){
+              if(somma1==2){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 65:
                   fantasma=1;
-                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE\n" );
+                  printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n" );
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -889,12 +893,12 @@ switch (stampa_prova_Mappa) {
                   break;
                 }
               }
-              if(somma==3){
+              if(somma1==3){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 80:
                   fantasma=1;
-                  printf("LA TUA PROSSIMA SCELTA POTREBBE ESSERE FATALE \n");
+                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE \n");
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -902,6 +906,14 @@ switch (stampa_prova_Mappa) {
                       giocatori[i].sanita_mentale-=60;
                     }else{
                       giocatori[i].stato=0;
+                      for(int y=0;y<4; y++){
+                      if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
+                        appoggioMappa=giocatori[i].posizione;
+                        appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                                                                           // un oggetto per raccogliere le prove
+                      }                                                    // quel oggetto viene lascitato come oggetto
+                                                                           // nella zona per poter continuare a giocare
+                      }
                     }
                     }
                   }
@@ -921,16 +933,16 @@ switch (stampa_prova_Mappa) {
           printf("Hai racolto la prova Spirit Box \n");
           giocatori[p].zaino[y]=prova_spirit_box;
           raccolta_spirit=1;
-          somma=raccolta_emf+raccolta_spirit+raccolta_video;
+          somma1=raccolta_emf+raccolta_spirit+raccolta_video;
           switch (difficolta) {
             case 1:
               spawn_fantasma=rand()%100;
-                if(somma==1){
+                if(somma1==1){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 30:
                   fantasma=1;
-                  printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n");
+                  printf("BOOO ANDATEVENE DA CASA MIA..\n");
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -940,12 +952,12 @@ switch (stampa_prova_Mappa) {
                   break;
                 }
                 }
-                if(somma==2){
+                if(somma1==2){
                   spawn_fantasma=rand()%100;
                   switch (spawn_fantasma) {
                     case 0 ... 40:
                     fantasma=1;
-                    printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE\n" );
+                    printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE \n" );
                     appoggioMappa=giocatori[p].posizione;
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
@@ -955,19 +967,27 @@ switch (stampa_prova_Mappa) {
                     break;
                   }
                 }
-                if(somma==3){
+                if(somma1==3){
                   spawn_fantasma=rand()%100;
                   switch (spawn_fantasma) {
                     case 0 ... 60:
                     fantasma=1;
-                    printf("LA TUA PROSSIMA SCELTA POTREBBE ESSERE FATALE \n");
+                    printf(" LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE\n");
                     appoggioMappa=giocatori[p].posizione;
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
                         if(giocatori[i].sanita_mentale>50){
                         giocatori[i].sanita_mentale-=50;
                       }else{
-                      giocatori[i].stato=0;
+                        giocatori[i].stato=0;
+                        for(int y=0;y<4; y++){
+                        if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
+                          appoggioMappa=giocatori[i].posizione;
+                          appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                                                                             // un oggetto per raccogliere le prove
+                        }                                                    // quel oggetto viene lascitato come oggetto
+                                                                             // nella zona per poter continuare a giocare
+                        }
                       }
                       }
                     }
@@ -975,18 +995,15 @@ switch (stampa_prova_Mappa) {
                   }
                 }
 
-
-
-
             break;
             case 2:
             spawn_fantasma=rand()%100;
-              if(somma==1){
+              if(somma1==1){
               spawn_fantasma=rand()%100;
               switch (spawn_fantasma) {
                 case 0 ... 40:
                 fantasma=1;
-                printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n");
+                printf("BOOO ANDATEVENE DA CASA MIA..\n");
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
@@ -996,12 +1013,12 @@ switch (stampa_prova_Mappa) {
                 break;
               }
               }
-              if(somma==2){
+              if(somma1==2){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 50:
                   fantasma=1;
-                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE\n" );
+                  printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n" );
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -1011,19 +1028,27 @@ switch (stampa_prova_Mappa) {
                   break;
                 }
               }
-              if(somma==3){
+              if(somma1==3){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 70:
                   fantasma=1;
-                  printf("LA TUA PROSSIMA SCELTA POTREBBE ESSERE FATALE \n");
+                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE \n");
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
                       if(giocatori[i].sanita_mentale>50){
                       giocatori[i].sanita_mentale-=50;
                       }else{
-                      giocatori[i].stato=0;
+                        giocatori[i].stato=0;
+                        for(int y=0;y<4; y++){
+                        if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
+                          appoggioMappa=giocatori[i].posizione;
+                          appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                                                                             // un oggetto per raccogliere le prove
+                        }                                                    // quel oggetto viene lascitato come oggetto
+                                                                             // nella zona per poter continuare a giocare
+                        }
                     }
                     }
                   }
@@ -1034,12 +1059,12 @@ switch (stampa_prova_Mappa) {
             break;
             case 3:
             spawn_fantasma=rand()%100;
-              if(somma==1){
+              if(somma1==1){
               spawn_fantasma=rand()%100;
               switch (spawn_fantasma) {
                 case 0 ... 50:
                 fantasma=1;
-                printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n");
+                printf("BOOO ANDATEVENE DA CASA MIA..\n");
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
@@ -1049,12 +1074,12 @@ switch (stampa_prova_Mappa) {
                 break;
               }
               }
-              if(somma==2){
+              if(somma1==2){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 65:
                   fantasma=1;
-                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE\n" );
+                  printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE.\n" );
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -1064,19 +1089,27 @@ switch (stampa_prova_Mappa) {
                   break;
                 }
               }
-              if(somma==3){
+              if(somma1==3){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 80:
                   fantasma=1;
-                  printf("LA TUA PROSSIMA SCELTA POTREBBE ESSERE FATALE \n");
+                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE \n");
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
                       if(giocatori[i].sanita_mentale>60){
                       giocatori[i].sanita_mentale-=60;
                     }else{
-                    giocatori[i].stato=0;
+                      giocatori[i].stato=0;
+                      for(int y=0;y<4; y++){
+                      if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
+                        appoggioMappa=giocatori[i].posizione;
+                        appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                                                                           // un oggetto per raccogliere le prove
+                      }                                                    // quel oggetto viene lascitato come oggetto
+                                                                           // nella zona per poter continuare a giocare
+                      }
                     }
                     }
                   }
@@ -1096,16 +1129,16 @@ switch (stampa_prova_Mappa) {
           printf("Hai racolto la prova Videocamera \n");
           giocatori[p].zaino[y]=prova_videocamera;
           raccolta_video=1;
-          somma=raccolta_emf+raccolta_spirit+raccolta_video;
+          somma1=raccolta_emf+raccolta_spirit+raccolta_video;
           switch (difficolta) {
             case 1:
               spawn_fantasma=rand()%100;
-                if(somma==1){
+                if(somma1==1){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 30:
                   fantasma=1;
-                  printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n");
+                  printf("BOOO ANDATEVENE DA CASA MIA..\n");
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -1115,12 +1148,12 @@ switch (stampa_prova_Mappa) {
                   break;
                 }
                 }
-                if(somma==2){
+                if(somma1==2){
                   spawn_fantasma=rand()%100;
                   switch (spawn_fantasma) {
                     case 0 ... 40:
                     fantasma=1;
-                    printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE\n" );
+                    printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE.\n" );
                     appoggioMappa=giocatori[p].posizione;
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
@@ -1130,19 +1163,27 @@ switch (stampa_prova_Mappa) {
                     break;
                   }
                 }
-                if(somma==3){
+                if(somma1==3){
                   spawn_fantasma=rand()%100;
                   switch (spawn_fantasma) {
                     case 0 ... 60:
                     fantasma=1;
-                    printf("LA TUA PROSSIMA SCELTA POTREBBE ESSERE FATALE \n");
+                    printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE \n");
                     appoggioMappa=giocatori[p].posizione;
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
                         if(giocatori[i].sanita_mentale>50){
                         giocatori[i].sanita_mentale-=50;
                       }else{
-                      giocatori[i].stato=0;
+                        giocatori[i].stato=0;
+                        for(int y=0;y<4; y++){
+                        if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
+                          appoggioMappa=giocatori[i].posizione;
+                          appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                                                                             // un oggetto per raccogliere le prove
+                        }                                                    // quel oggetto viene lascitato come oggetto
+                                                                             // nella zona per poter continuare a giocare
+                        }
                       }
                       }
                     }
@@ -1156,12 +1197,12 @@ switch (stampa_prova_Mappa) {
             break;
             case 2:
             spawn_fantasma=rand()%100;
-              if(somma==1){
+              if(somma1==1){
               spawn_fantasma=rand()%100;
               switch (spawn_fantasma) {
                 case 0 ... 40:
                 fantasma=1;
-                printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n");
+                printf("BOOO ANDATEVENE DA CASA MIA..\n");
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
@@ -1171,12 +1212,12 @@ switch (stampa_prova_Mappa) {
                 break;
               }
               }
-              if(somma==2){
+              if(somma1==2){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 50:
                   fantasma=1;
-                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE\n" );
+                  printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n" );
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -1186,19 +1227,27 @@ switch (stampa_prova_Mappa) {
                   break;
                 }
               }
-              if(somma==3){
+              if(somma1==3){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 70:
                   fantasma=1;
-                  printf("LA TUA PROSSIMA SCELTA POTREBBE ESSERE FATALE \n");
+                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE \n");
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
                       if(giocatori[i].sanita_mentale>50){
                       giocatori[i].sanita_mentale-=50;
                     }else{
-                    giocatori[i].stato=0;
+                      giocatori[i].stato=0;
+                      for(int y=0;y<4; y++){
+                      if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
+                        appoggioMappa=giocatori[i].posizione;
+                        appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                                                                           // un oggetto per raccogliere le prove
+                      }                                                    // quel oggetto viene lascitato come oggetto
+                                                                           // nella zona per poter continuare a giocare
+                      }
                     }
                     }
                   }
@@ -1208,12 +1257,12 @@ switch (stampa_prova_Mappa) {
 
             break;
             case 3:
-              if(somma==1){
+              if(somma1==1){
               spawn_fantasma=rand()%100;
               switch (spawn_fantasma) {
                 case 0 ... 50:
                 fantasma=1;
-                printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n");
+                printf("BOOO ANDATEVENE DA CASA MIA..\n");
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
@@ -1223,12 +1272,12 @@ switch (stampa_prova_Mappa) {
                 break;
               }
               }
-              if(somma==2){
+              if(somma1==2){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 65:
                   fantasma=1;
-                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE\n" );
+                  printf("IL MIO POTERE AUMENTA OGNI VOLTA CHE MI VEDETE\n" );
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
@@ -1238,19 +1287,27 @@ switch (stampa_prova_Mappa) {
                   break;
                 }
               }
-              if(somma==3){
+              if(somma1==3){
                 spawn_fantasma=rand()%100;
                 switch (spawn_fantasma) {
                   case 0 ... 80:
                   fantasma=1;
-                  printf("LA TUA PROSSIMA SCELTA POTREBBE ESSERE FATALE \n");
+                  printf("LASCIATEMI IN PACE O PAGHERETE LE CONSEGUENZE \n");
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
                       if(giocatori[i].sanita_mentale>60){
                       giocatori[i].sanita_mentale-=60;
                     }else{
-                    giocatori[i].stato=0;
+                      giocatori[i].stato=0;
+                      for(int y=0;y<4; y++){
+                      if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
+                        appoggioMappa=giocatori[i].posizione;
+                        appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                                                                           // un oggetto per raccogliere le prove
+                      }                                                    // quel oggetto viene lascitato come oggetto
+                                                                           // nella zona per poter continuare a giocare
+                      }
                     }
                     }
                   }
@@ -1421,6 +1478,14 @@ switch (stampa_prova_Mappa) {
                     if(memcmp(&giocatori[p],&giocatori[i], sizeof(struct Giocatore)) != 0){
                       if(giocatori[i].posizione==giocatori[p].posizione){
                         giocatori[i].stato=0;// Il giocatore è morto
+                        for(int y=0;y<4; y++){
+                        if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
+                          appoggioMappa=giocatori[i].posizione;
+                          appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                                                                             // un oggetto per raccogliere le prove
+                        }                                                    // almeno un'oggetto viene lascitato come oggetto
+                                                                             // nella zona per poter continuare a giocare
+                        }// Il giocatore è morto
                       }
                     }
                   }
@@ -1461,7 +1526,7 @@ switch (stampa_prova_Mappa) {
           appoggioMappa->prova=nessuna_prova;
           break;
           case 40 ... 59:
-          printf( "E' apparsa la prova videocamera \n");
+          printf( "E' apparsa la prova Videocamera \n");
           appoggioMappa->prova=prova_videocamera;
           break;
           case 60 ... 79:
@@ -1489,4 +1554,14 @@ switch (stampa_prova_Mappa) {
         }
 
 
+      }
+      static void deallocalista(){ //funzione che scorre la lista stanze e dealloca la memoria allocata
+        free(giocatori);//dealloco la memoria allocata per l'array di giocatori
+        free(zonaCaravan);//dealloco la zona del caravan perchè non trovandosi nella lista la devo liberare a parte
+        conteggioMappa= primaMappa;
+        while (conteggioMappa != primaMappa) { //da aggiustare 
+          struct Zona_Mappa* appoggio = conteggioMappa;
+          conteggioMappa = conteggioMappa->prossima_zona;
+          free(appoggio);  //dealloco le zone dalla mappa
+        }
       }

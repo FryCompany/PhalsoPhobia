@@ -24,7 +24,6 @@ int flag=0;
     while((getchar()) != '\n');
     switch(scelta){
       case '1':
-
       controllo =imposta_gioco();
       break;
 
@@ -38,7 +37,7 @@ int flag=0;
       break;
 
       case '3':
-      //dealloca 
+      //dealloca
        flag=1;
       break;
 
