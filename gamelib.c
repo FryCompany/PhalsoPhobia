@@ -43,7 +43,7 @@ static struct Zona_Mappa* zonaCaravan;
 
 int controllo_imposta=0,difficolta=0,avanza_counter=1,usa_sale=0;
 int prova1_trovata=0,prova2_trovata=0,prova3_trovata=0;
-int somma1=0,raccolta_emf=0,raccolta_spirit=0,raccolta_video=0,flag_menu=0;
+int somma1=0,raccolta_emf=0,raccolta_spirit=0,raccolta_video=0,flag_menu=0,flagfinale=0;
 
 
 // comando : gcc  main.c gamelib.c
@@ -509,7 +509,7 @@ static int chiudi_mappa(){
 void  gioca(int num_giocatori){
   printf("\e[1;1H\e[2J \n" );
     int turni[num_giocatori];
-    int temp=0,random_i,possibila_prova,stampa_zona,fantasma=0,flagfinale=0;
+    int temp=0,random_i,possibila_prova,stampa_zona,fantasma=0;
     char input;
     for (int i = 0; i < num_giocatori; i++) {
       giocatori[i].posizione=primaMappa; //imposto tutti i giocatori presenti nella mappa iniziale
@@ -534,16 +534,8 @@ void  gioca(int num_giocatori){
       printf("Tutti i i giocatori sono morti \n" );
       printf("Hai perso.. \n");
       sleep(3);
-    }else{
-
-    if(raccolta_emf==1 && raccolta_spirit==1 && raccolta_video==1)
-    {
       flagfinale=1;
-      printf("Complimenti hai raccolto tutte le prove \n" );
-      printf("Vittoria \n");
-      sleep(3);
     }else{
-
     for (int i = 0; i < num_giocatori; i++) {
        temp = turni[i];
        random_i = rand() % num_giocatori;
@@ -574,7 +566,7 @@ void  gioca(int num_giocatori){
     }
 
 }
-}
+
 }
 }while(flagfinale==0); //il gioco si ripete finche i giocatori perdono o vincono
 
@@ -687,7 +679,10 @@ static void torna_caravan(int p){
     }
     }
     if (prova1_trovata==1 && prova2_trovata==1 && prova3_trovata==1) {
-      flag_menu=1;
+      flagfinale=1;
+      printf("Complimenti hai raccolto tutte le prove \n");
+      printf("Vittoria \n");
+      sleep(3);
     }
     }
 
@@ -1546,7 +1541,7 @@ static  void stampa_info_p(int p){
               for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==sale){
                   usa_sale=1;
-                //  i=4; // cosi se il giocatore ha 2 oggetti sale ne utilizza solo 1
+                  giocatori[p].zaino[i]=nessun_oggetto;
 
               }else{
                 contatore2=contatore2+1;
@@ -1562,7 +1557,7 @@ static  void stampa_info_p(int p){
               flag2=0;
               for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==adrenalina){
-                  //i=4;
+
                   avanza_counter=avanza_counter+1;
                   giocatori[p].zaino[i]=nessun_oggetto;
               }else{
@@ -1638,7 +1633,7 @@ static  void stampa_info_p(int p){
             }
 
 
-        }while (flag2!=1);
+        }while (flag2==1);
         }
       }
 
