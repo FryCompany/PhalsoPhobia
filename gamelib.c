@@ -42,9 +42,9 @@ static struct Zona_Mappa* zonaCaravan;
 
 
 
-int controllo_imposta=0,difficolta=0,avanza_counter=1;
+int controllo_imposta=0,difficolta=0,avanza_counter=1,usa_sale=0;
 int prova1_trovata=0,prova2_trovata=0,prova3_trovata=0;
-int somma1=0,raccolta_emf=0,raccolta_spirit=0,raccolta_video=0;
+int somma1=0,raccolta_emf=0,raccolta_spirit=0,raccolta_video=0,flag_menu=0;
 
 
 // comando : gcc  main.c gamelib.c
@@ -507,7 +507,7 @@ static int chiudi_mappa(){
 void  gioca(int num_giocatori){
   printf("\e[1;1H\e[2J \n" );
     int turni[num_giocatori];
-    int temp=0,random_i,flag,possibila_prova,stampa_zona,fantasma=0,flag1,flagfinale=0;
+    int temp=0,random_i,possibila_prova,stampa_zona,fantasma=0,flagfinale=0;
     char input;
     for (int i = 0; i < num_giocatori; i++) {
       giocatori[i].posizione=primaMappa; //imposto tutti i giocatori presenti nella mappa iniziale
@@ -518,13 +518,27 @@ void  gioca(int num_giocatori){
     }
 
    int p=0;
+   int morti_counter=0;
    primaMappa->prova=nessuna_prova;
    primaMappa->oggetto_zona=nessun_oggetto; //AL primo turno non puo' esserci ne una prova ne un oggetto
   do{
+    for (int i = 0; i < num_giocatori; i++) {
+      if(giocatori[i].stato==0){
+        morti_counter=morti_counter+1;
+      }
+
+    }
+    if(morti_counter==num_giocatori){
+      printf("Tutti i i giocatori sono morti \n" );
+      printf("Hai perso.. \n");
+      sleep(3);
+    }else{
+
     if(raccolta_emf==1 && raccolta_spirit==1 && raccolta_video==1)
     {
       flagfinale=1;
-      printf("Vittoria \n" );
+      printf("Complimenti hai raccolto tutte le prove \n" );
+      printf("Vittoria \n");
       sleep(3);
     }else{
 
@@ -559,13 +573,14 @@ void  gioca(int num_giocatori){
 
 }
 }
+}
 }while(flagfinale==0); //il gioco si ripete finche i giocatori perdono o vincono
 
 
 
     }
  void menu_scelte(int p){
-   int flag=0,usa_sale=0,fantasma=0;
+   int fantasma=0;
    do{
    char scelta;
    printf("\n");
@@ -618,12 +633,12 @@ void  gioca(int num_giocatori){
      usa_oggetto(p,num_giocatori);
      break;
      case '8':
-     flag=1;
+     flag_menu=1;
      avanza_counter=1; //Imposto la variabile uguale ad uno cosi il prossimo player puo avanzare
      fantasma=0; //quando il giocatore passa il turno il fantasma "scompare"
      break;
    }
- }while(flag!=1);
+ }while(flag_menu!=1);
 
  }
 void torna_caravan(int p){
@@ -668,6 +683,9 @@ void torna_caravan(int p){
         giocatori[p].zaino[pos_prova]=spirit_box;
       }
     }
+    }
+    if (prova1_trovata==1 && prova2_trovata==1 && prova3_trovata==1) {
+      flag_menu=1;
     }
     }
 
@@ -780,7 +798,9 @@ switch (stampa_prova_Mappa) {
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
+                      if(usa_sale==0){
                       giocatori[i].sanita_mentale-=20;
+                    }
                     }
                   }
                   break;
@@ -795,7 +815,9 @@ switch (stampa_prova_Mappa) {
                     appoggioMappa=giocatori[p].posizione;
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
+                        if(usa_sale==0){
                         giocatori[i].sanita_mentale-=30;
+                      }
                       }
                     }
                     break;
@@ -810,7 +832,24 @@ switch (stampa_prova_Mappa) {
                     appoggioMappa=giocatori[p].posizione;
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
-                        giocatori[i].sanita_mentale-=50;
+                        if(giocatori[i].sanita_mentale>60){
+                          if(usa_sale==0){
+                          giocatori[i].sanita_mentale-=60;
+                          }
+                      }else{
+                        if(usa_sale==0){
+                        giocatori[i].stato=0;
+                        flag_menu=1; //cosi il turno passa automaticamente al giocatore successivo
+                        for(int y=0;y<4; y++){
+                        if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
+                          appoggioMappa=giocatori[i].posizione;
+                          appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                                                                             // un oggetto per raccogliere le prove
+                        }                                                    // quel oggetto viene lascitato come oggetto
+                                                                             // nella zona per poter continuare a giocare
+                        }
+                      }
+                    }
                       }
                     }
                     break;
@@ -832,7 +871,9 @@ switch (stampa_prova_Mappa) {
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
+                    if(usa_sale==0){
                     giocatori[i].sanita_mentale-=30;
+                  }
                   }
                 }
                 break;
@@ -847,7 +888,9 @@ switch (stampa_prova_Mappa) {
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
+                      if(usa_sale==0){
                       giocatori[i].sanita_mentale-=40;
+                    }
                     }
                   }
                   break;
@@ -862,7 +905,24 @@ switch (stampa_prova_Mappa) {
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
-                      giocatori[i].sanita_mentale-=50;
+                      if(giocatori[i].sanita_mentale>60){
+                        if(usa_sale==0){
+                        giocatori[i].sanita_mentale-=60;
+                      }
+                    }else{
+                      if(usa_sale==0){
+                      giocatori[i].stato=0;
+                      flag_menu=1; //cosi il turno passa automaticamente al giocatore successivo
+                      for(int y=0;y<4; y++){
+                      if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
+                        appoggioMappa=giocatori[i].posizione;
+                        appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                                                                           // un oggetto per raccogliere le prove
+                      }                                                    // quel oggetto viene lascitato come oggetto
+                                                                           // nella zona per poter continuare a giocare
+                      }
+                    }
+                    }
                     }
                   }
                   break;
@@ -881,7 +941,9 @@ switch (stampa_prova_Mappa) {
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
+                    if(usa_sale==0){
                     giocatori[i].sanita_mentale-=40;
+                  }
                   }
                 }
                 break;
@@ -896,7 +958,9 @@ switch (stampa_prova_Mappa) {
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
+                      if(usa_sale==0){
                       giocatori[i].sanita_mentale-=50;
+                    }
                     }
                   }
                   break;
@@ -912,9 +976,14 @@ switch (stampa_prova_Mappa) {
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
                       if(giocatori[i].sanita_mentale>60){
-                      giocatori[i].sanita_mentale-=60;
+                        if(usa_sale==0){
+                        giocatori[i].sanita_mentale-=60;
+                      }
                     }else{
+                      if(usa_sale==0){
                       giocatori[i].stato=0;
+
+                      flag_menu=1; //cosi il turno passa automaticamente al giocatore successivo
                       for(int y=0;y<4; y++){
                       if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
                         appoggioMappa=giocatori[i].posizione;
@@ -924,6 +993,7 @@ switch (stampa_prova_Mappa) {
                                                                            // nella zona per poter continuare a giocare
                       }
                     }
+                  }
                     }
                   }
                   break;
@@ -955,7 +1025,9 @@ switch (stampa_prova_Mappa) {
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
+                      if(usa_sale==0){
                       giocatori[i].sanita_mentale-=20;
+                    }
                     }
                   }
                   break;
@@ -970,7 +1042,9 @@ switch (stampa_prova_Mappa) {
                     appoggioMappa=giocatori[p].posizione;
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
+                        if(usa_sale==0){
                         giocatori[i].sanita_mentale-=30;
+                      }
                       }
                     }
                     break;
@@ -986,8 +1060,11 @@ switch (stampa_prova_Mappa) {
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
                         if(giocatori[i].sanita_mentale>50){
-                        giocatori[i].sanita_mentale-=50;
+                          if(usa_sale==0){
+                          giocatori[i].sanita_mentale-=50;
+                        }
                       }else{
+                        if(usa_sale==0){
                         giocatori[i].stato=0;
                         for(int y=0;y<4; y++){
                         if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
@@ -997,6 +1074,7 @@ switch (stampa_prova_Mappa) {
                         }                                                    // quel oggetto viene lascitato come oggetto
                                                                              // nella zona per poter continuare a giocare
                         }
+                      }
                       }
                       }
                     }
@@ -1016,7 +1094,9 @@ switch (stampa_prova_Mappa) {
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
+                    if(usa_sale==0){
                     giocatori[i].sanita_mentale-=30;
+                  }
                   }
                 }
                 break;
@@ -1031,7 +1111,9 @@ switch (stampa_prova_Mappa) {
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
+                      if(usa_sale==0){
                       giocatori[i].sanita_mentale-=40;
+                    }
                     }
                   }
                   break;
@@ -1047,8 +1129,11 @@ switch (stampa_prova_Mappa) {
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
                       if(giocatori[i].sanita_mentale>50){
-                      giocatori[i].sanita_mentale-=50;
+                        if(usa_sale==0){
+                        giocatori[i].sanita_mentale-=50;
+                      }
                       }else{
+                        if(usa_sale==0){
                         giocatori[i].stato=0;
                         for(int y=0;y<4; y++){
                         if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
@@ -1058,6 +1143,7 @@ switch (stampa_prova_Mappa) {
                         }                                                    // quel oggetto viene lascitato come oggetto
                                                                              // nella zona per poter continuare a giocare
                         }
+                      }
                     }
                     }
                   }
@@ -1077,7 +1163,9 @@ switch (stampa_prova_Mappa) {
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
+                    if(usa_sale==0){
                     giocatori[i].sanita_mentale-=40;
+                  }
                   }
                 }
                 break;
@@ -1092,7 +1180,9 @@ switch (stampa_prova_Mappa) {
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
+                      if(usa_sale==0){
                       giocatori[i].sanita_mentale-=50;
+                    }
                     }
                   }
                   break;
@@ -1108,8 +1198,11 @@ switch (stampa_prova_Mappa) {
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
                       if(giocatori[i].sanita_mentale>60){
-                      giocatori[i].sanita_mentale-=60;
+                        if(usa_sale==0){
+                        giocatori[i].sanita_mentale-=60;
+                      }
                     }else{
+                      if(usa_sale==0){
                       giocatori[i].stato=0;
                       for(int y=0;y<4; y++){
                       if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
@@ -1119,6 +1212,7 @@ switch (stampa_prova_Mappa) {
                       }                                                    // quel oggetto viene lascitato come oggetto
                                                                            // nella zona per poter continuare a giocare
                       }
+                    }
                     }
                     }
                   }
@@ -1151,7 +1245,9 @@ switch (stampa_prova_Mappa) {
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
+                      if(usa_sale==0){
                       giocatori[i].sanita_mentale-=20;
+                    }
                     }
                   }
                   break;
@@ -1166,7 +1262,9 @@ switch (stampa_prova_Mappa) {
                     appoggioMappa=giocatori[p].posizione;
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
+                        if(usa_sale==0){
                         giocatori[i].sanita_mentale-=30;
+                      }
                       }
                     }
                     break;
@@ -1182,8 +1280,11 @@ switch (stampa_prova_Mappa) {
                     for (int i = 0; i < num_giocatori; i++) {
                       if(giocatori[i].posizione==appoggioMappa){
                         if(giocatori[i].sanita_mentale>50){
-                        giocatori[i].sanita_mentale-=50;
+                          if(usa_sale==0){
+                          giocatori[i].sanita_mentale-=50;
+                        }
                       }else{
+                        if(usa_sale==0){
                         giocatori[i].stato=0;
                         for(int y=0;y<4; y++){
                         if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
@@ -1193,6 +1294,7 @@ switch (stampa_prova_Mappa) {
                         }                                                    // quel oggetto viene lascitato come oggetto
                                                                              // nella zona per poter continuare a giocare
                         }
+                      }
                       }
                       }
                     }
@@ -1215,7 +1317,9 @@ switch (stampa_prova_Mappa) {
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
+                    if(usa_sale==0){
                     giocatori[i].sanita_mentale-=30;
+                  }
                   }
                 }
                 break;
@@ -1230,7 +1334,9 @@ switch (stampa_prova_Mappa) {
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
+                      if(usa_sale==0){
                       giocatori[i].sanita_mentale-=40;
+                    }
                     }
                   }
                   break;
@@ -1246,8 +1352,11 @@ switch (stampa_prova_Mappa) {
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
                       if(giocatori[i].sanita_mentale>50){
-                      giocatori[i].sanita_mentale-=50;
+                        if(usa_sale==0){
+                        giocatori[i].sanita_mentale-=50;
+                      }
                     }else{
+                      if(usa_sale==0){
                       giocatori[i].stato=0;
                       for(int y=0;y<4; y++){
                       if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
@@ -1257,6 +1366,7 @@ switch (stampa_prova_Mappa) {
                       }                                                    // quel oggetto viene lascitato come oggetto
                                                                            // nella zona per poter continuare a giocare
                       }
+                    }
                     }
                     }
                   }
@@ -1275,7 +1385,9 @@ switch (stampa_prova_Mappa) {
                 appoggioMappa=giocatori[p].posizione;
                 for (int i = 0; i < num_giocatori; i++) {
                   if(giocatori[i].posizione==appoggioMappa){
+                    if(usa_sale==0){
                     giocatori[i].sanita_mentale-=40;
+                  }
                   }
                 }
                 break;
@@ -1290,7 +1402,9 @@ switch (stampa_prova_Mappa) {
                   appoggioMappa=giocatori[p].posizione;
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
+                      if(usa_sale==0){
                       giocatori[i].sanita_mentale-=50;
+                    }
                     }
                   }
                   break;
@@ -1306,8 +1420,11 @@ switch (stampa_prova_Mappa) {
                   for (int i = 0; i < num_giocatori; i++) {
                     if(giocatori[i].posizione==appoggioMappa){
                       if(giocatori[i].sanita_mentale>60){
-                      giocatori[i].sanita_mentale-=60;
+                        if(usa_sale==0){
+                        giocatori[i].sanita_mentale-=60;
+                      }
                     }else{
+                      if(usa_sale==0){
                       giocatori[i].stato=0;
                       for(int y=0;y<4; y++){
                       if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
@@ -1317,6 +1434,7 @@ switch (stampa_prova_Mappa) {
                       }                                                    // quel oggetto viene lascitato come oggetto
                                                                            // nella zona per poter continuare a giocare
                       }
+                    }
                     }
                     }
                   }
@@ -1395,9 +1513,10 @@ switch (stampa_prova_Mappa) {
           case 'C':
           case 'c':
               contatore=0;
+              flag2=0;
               for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==calmanti){
-                  flag2=1;
+                  //i=4;
               if(giocatori[p].sanita_mentale==100){
                 printf("Hai la sanita mentale massima \n");
                 }else{
@@ -1412,9 +1531,7 @@ switch (stampa_prova_Mappa) {
             }else{
             contatore2=contatore2+1;
             }
-            if(flag2==1){ // se il giocatore ha due oggetti uguali se ne utilizza uno solo
-              i=4;        // è quindi si esce dal ciclo che controllo lo zaino del giocatore
-            }
+
               }
               if(contatore2==4){
                 printf("Non possiedi l'oggetto nello zaino \n");
@@ -1423,9 +1540,12 @@ switch (stampa_prova_Mappa) {
               case 'S':
               case 's':
               contatore2=0;
+              flag2=0;
               for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==sale){
-                  //da completare
+                  usa_sale=1;
+                //  i=4; // cosi se il giocatore ha 2 oggetti sale ne utilizza solo 1
+
               }else{
                 contatore2=contatore2+1;
               }
@@ -1440,15 +1560,13 @@ switch (stampa_prova_Mappa) {
               flag2=0;
               for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==adrenalina){
-                  flag2=1;
+                  //i=4;
                   avanza_counter=avanza_counter+1;
                   giocatori[p].zaino[i]=nessun_oggetto;
               }else{
                 contatore2=contatore2+1;
               }
-              if(flag2==1){
-                i=4;
-              }
+
               }
               if(contatore2==4){
                 printf("Non possiedi l'oggetto nello zaino \n");
@@ -1457,10 +1575,11 @@ switch (stampa_prova_Mappa) {
               case 'D':
               case 'd':
               contatore2=0;
-
+              flag2=0;
               for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==cento_dollari){
                   g=rand()%2;
+                  //i=4;
                   if(g==0){
                     giocatori[p].zaino[i]=sale;
                     printf("Hai ricevuto del sale \n");
@@ -1479,14 +1598,15 @@ switch (stampa_prova_Mappa) {
               case 'X':
               case 'x':
               contatore2=0;
+              flag2=0;
               for(int i=0;i<4;i++){
                 if(giocatori[p].zaino[i]==coltello){
-
+                  //i=4;
                   if(giocatori[p].sanita_mentale<30){
                   for (int i = 0; i < num_giocatori; i++) {
                     if(memcmp(&giocatori[p],&giocatori[i], sizeof(struct Giocatore)) != 0){
                       if(giocatori[i].posizione==giocatori[p].posizione){
-                        giocatori[i].stato=0;// Il giocatore è morto
+                        //giocatori[i].stato=0;// Il giocatore è morto
                         for(int y=0;y<4; y++){
                         if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
                           appoggioMappa=giocatori[i].posizione;
@@ -1494,7 +1614,7 @@ switch (stampa_prova_Mappa) {
                                                                              // un oggetto per raccogliere le prove
                         }                                                    // almeno un'oggetto viene lascitato come oggetto
                                                                              // nella zona per poter continuare a giocare
-                        }// Il giocatore è morto
+                        }
                       }
                     }
                   }
@@ -1511,12 +1631,12 @@ switch (stampa_prova_Mappa) {
               break;
               default:
               printf("Valore errato \n");
-              flag=1;
+              flag2=1;
               break;
             }
 
 
-        }while (flag==1);
+        }while (flag2!=1);
         }
       }
 
@@ -1547,6 +1667,8 @@ switch (stampa_prova_Mappa) {
           appoggioMappa->prova=prova_emf;
           break;
         }
+        //controllo se un giocatore e morto e quindi ha lascitato un oggetto per raccogliere le prove
+        if(appoggioMappa->oggetto_zona!=emf || appoggioMappa->oggetto_zona!=spirit_box || appoggioMappa->oggetto_zona!=videocamera){
         switch (oggetto_spawn) {
           case 0 ... 69:
           appoggioMappa->oggetto_zona=nessun_oggetto;
@@ -1561,7 +1683,7 @@ switch (stampa_prova_Mappa) {
           appoggioMappa->oggetto_zona=coltello;
           break;
         }
-
+        }
 
       }
       static void deallocalista(){
