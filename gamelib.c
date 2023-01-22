@@ -19,6 +19,7 @@ static void avanza(int p);
 static int raccogli_prova(int p);
 static void raccogli_oggetto(int p);
 static void usa_oggetto(int p,int num_giocatori);
+static void azione_compiuta(int p);
 static void deallocalista();
 
 
@@ -116,6 +117,12 @@ static void imposta_nomi(int num_giocatori){
     printf("inserire il nome del %i giocatore :",i+1 );
        scanf("%s", giocatori[i].nome);
      while((getchar()) != '\n');
+     while(strlen(giocatori[i].nome) > 20){
+    printf("Il nome inserito è troppo lungo \n");
+    printf("Inseriscilo di nuovo: ");
+    scanf("%s", giocatori[i].nome);
+    while((getchar()) != '\n');
+  }
        // Verifica se ogni carattere della stringa è alfabetico
   for (int f = 0; giocatori[i].nome[f] != '\0'; f++) {
       if (!((giocatori[i].nome[f] >= 'A' && giocatori[i].nome[f] <= 'Z') || (giocatori[i].nome[f] >= 'a' && giocatori[i].nome[f] <= 'z'))) {
@@ -158,10 +165,6 @@ printf("Selezionare la difficolta :\n");
 printf("1) Dilettante \n");
 printf("2) Intermedio \n");
 printf("3) Incubo \n");
-printf("ecco :%p\n",(void*) &giocatori[0]);
-printf("ecco :%p\n",(void*) &giocatori[1]);
-printf("ecco :%p\n",(void*) &giocatori[2]);
-printf("ecco :%p\n",(void*) &giocatori[3]);
 printf("Inserire la scelta :");
 scanf("%c", &input);
 while((getchar()) != '\n');
@@ -376,7 +379,6 @@ static void inserisci_zona(){
       // uso un puntatore per stampare la mappa
       stampaMappa = primaMappa;
       do{
-        printf("ecco :%p\n",stampaMappa);
         int tipo_zona;
         tipo_zona=stampaMappa->zona;
         switch (tipo_zona) {
@@ -443,7 +445,12 @@ static void inserisci_zona(){
 static int chiudi_mappa(){
     int num_mappa=0;
     int flag=0;
-
+    if(primaMappa == NULL) // No node in the list
+    {
+      flag=1;
+      printf("Non è presente nessuna zona della mappa! \n");
+    }
+    else{
     conteggioMappa=primaMappa;
     do{
       num_mappa+=1;
@@ -454,7 +461,9 @@ static int chiudi_mappa(){
       flag=1;
     }
 
-    return flag;
+
+  }
+  return flag;
   }
   static void stampa_inventario(int p){
         int oggetto;
@@ -535,6 +544,7 @@ void  gioca(int num_giocatori){
       printf("Hai perso.. \n");
       sleep(3);
       flagfinale=1;
+      deallocalista();
     }else{
     for (int i = 0; i < num_giocatori; i++) {
        temp = turni[i];
@@ -683,6 +693,7 @@ static void torna_caravan(int p){
       printf("Complimenti hai raccolto tutte le prove \n");
       printf("Vittoria \n");
       sleep(3);
+      deallocalista();
     }
     }
 
@@ -1000,7 +1011,7 @@ static  void stampa_info_p(int p){
             break;
           }
         }else{
-          printf("Non è presente nessuna prova!! \n");
+          printf("Non puoi raccogliere nessuna prova!! \n");
         }
         break;
         case 1:
@@ -1220,7 +1231,7 @@ static  void stampa_info_p(int p){
             break;
           }
         }else{
-          printf("Non è presente nessuna prova!! \n");
+          printf("Non puoi raccogliere nessuna prova!! \n");
         }
         break;
         case 2:
@@ -1442,7 +1453,7 @@ static  void stampa_info_p(int p){
             break;
           }
         }else{
-          printf("Non è presente nessuna prova!! \n");
+          printf("Non puoi raccogliere nessuna prova!! \n");
         }
         break;
 
@@ -1454,31 +1465,30 @@ static  void stampa_info_p(int p){
         return fantasma;
       }
   static void raccogli_oggetto(int p ){
-        int oggetto,flag=0;
+        int oggetto,flag=0,flag_ogg=0;
         appoggioMappa=NULL;
         appoggioMappa=giocatori[p].posizione;
         for (int y = 0; y < 4; y++) {
           oggetto=giocatori[p].zaino[y];
           switch (oggetto) {
-            case 8:
+            case 8: //se il giocatore ha spazio nello zaino 8=nessun_oggetto
             flag=1;
             if(appoggioMappa->oggetto_zona!=8){
               printf("Hai racolto l'oggetto presente nella zona \n");
               giocatori[p].zaino[y]=appoggioMappa->oggetto_zona;
               appoggioMappa->oggetto_zona=nessun_oggetto;
-              flag=2;
+              flag_ogg=1;
             }else{
+              if(flag_ogg!=1){
               printf("Non è presente nessuna oggetto raccoglibile!! \n");
-              y=4;//se non e presente nessuno oggetto esce subito dal ciclo for
+            }
+
             }
             break;
           }
-          if (flag==2) {
-            y=4; //se l'oggetto è stato raccolto esce subito dal ciclo for
-          }
           }
           if(flag==0){
-            printf("Zaino pieno\n" );
+            printf("Non c'è spazio nello zaino\n" );
             }
           }
 
@@ -1511,9 +1521,12 @@ static  void stampa_info_p(int p){
           case 'c':
               contatore=0;
               flag2=0;
+              flag=0;
               for(int i=0;i<4;i++){
+                if(flag==0){ //se il giocatore ha 2 oggetti uguali ne utilizza solo uno
                 if(giocatori[p].zaino[i]==calmanti){
-                  //i=4;
+                  flag=1;
+
               if(giocatori[p].sanita_mentale==100){
                 printf("Hai la sanita mentale massima \n");
                 }else{
@@ -1528,7 +1541,7 @@ static  void stampa_info_p(int p){
             }else{
             contatore2=contatore2+1;
             }
-
+            }
               }
               if(contatore2==4){
                 printf("Non possiedi l'oggetto nello zaino \n");
@@ -1538,14 +1551,18 @@ static  void stampa_info_p(int p){
               case 's':
               contatore2=0;
               flag2=0;
+              flag=0;
               for(int i=0;i<4;i++){
+                if(flag==0){//se il giocatore ha 2 oggetti uguali ne utilizza solo uno
                 if(giocatori[p].zaino[i]==sale){
+                  flag=1;
                   usa_sale=1;
                   giocatori[p].zaino[i]=nessun_oggetto;
 
               }else{
                 contatore2=contatore2+1;
               }
+            }
               }
               if(contatore2==4){
                 printf("Non possiedi l'oggetto nello zaino \n");
@@ -1555,15 +1572,17 @@ static  void stampa_info_p(int p){
               case 'a':
               contatore2=0;
               flag2=0;
+              flag=0;
               for(int i=0;i<4;i++){
+                if(flag==0){//se il giocatore ha 2 oggetti uguali ne utilizza solo uno
                 if(giocatori[p].zaino[i]==adrenalina){
-
+                  flag=1;
                   avanza_counter=avanza_counter+1;
                   giocatori[p].zaino[i]=nessun_oggetto;
               }else{
                 contatore2=contatore2+1;
               }
-
+              }
               }
               if(contatore2==4){
                 printf("Non possiedi l'oggetto nello zaino \n");
@@ -1573,10 +1592,12 @@ static  void stampa_info_p(int p){
               case 'd':
               contatore2=0;
               flag2=0;
+              flag=0;
               for(int i=0;i<4;i++){
+                if(flag==0){ //se il giocatore ha 2 oggetti uguali ne utilizza solo uno
                 if(giocatori[p].zaino[i]==cento_dollari){
                   g=rand()%2;
-                  //i=4;
+                  flag=1;
                   if(g==0){
                     giocatori[p].zaino[i]=sale;
                     printf("Hai ricevuto del sale \n");
@@ -1584,6 +1605,7 @@ static  void stampa_info_p(int p){
                     giocatori[p].zaino[i]=calmanti;
                     printf("Hai ricevuto un calmante\n");
                   }
+                }
               }else{
                 contatore2=contatore2+1;
               }
@@ -1596,9 +1618,11 @@ static  void stampa_info_p(int p){
               case 'x':
               contatore2=0;
               flag2=0;
+              flag=0;
               for(int i=0;i<4;i++){
+                if(flag==0){//se il giocatore ha 2 oggetti uguali ne utilizza solo uno
                 if(giocatori[p].zaino[i]==coltello){
-                  //i=4;
+                  flag=1;
                   if(giocatori[p].sanita_mentale<30){
                   for (int i = 0; i < num_giocatori; i++) {
                     if(memcmp(&giocatori[p],&giocatori[i], sizeof(struct Giocatore)) != 0){
@@ -1621,9 +1645,11 @@ static  void stampa_info_p(int p){
               }else{
                 contatore2=contatore2+1;
               }
+            }
               }
               if(contatore2==4){
                 printf("Non possiedi l'oggetto nello zaino \n");
+                flag2=1;
               }
               break;
               default:
@@ -1682,6 +1708,23 @@ static  void stampa_info_p(int p){
         }
         }
 
+      }
+      static void azione_compiuta(int p){
+        int decremento_sanita=0;
+        decremento_sanita=rand()%100;
+        switch (decremento_sanita) {
+          case 0 ... 19 :
+          if(giocatori[p].sanita_mentale>15){
+          giocatori[p].sanita_mentale-=15;
+          printf("Hai perso 15 punti di sanita mentale\n");
+          printf("Stai attento la casa è stregata...\n");
+          sleep(3);
+        }else{
+          giocatori[p].stato=0;
+          //manca messaggio di morte 
+        }
+          break;
+        }
       }
       static void deallocalista(){ //funzione che scorre la lista stanze e dealloca la memoria allocata
         free(giocatori);//dealloco la memoria allocata per l'array di giocatori

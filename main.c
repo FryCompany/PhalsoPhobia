@@ -30,9 +30,10 @@ int flag=0;
       case '2':
       if(controllo==1){
         gioca(num_giocatori);
-      }else
+      }else{
       printf("Non hai ancora impostato il gioco!!!\n");
-
+      sleep(2);
+      }
 
       break;
 
