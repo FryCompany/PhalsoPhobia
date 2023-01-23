@@ -14,6 +14,7 @@
 //funzioni
 int imposta_gioco();
 void gioca(int num_giocatori);
+void termina_gioco();
 
 
 int num_giocatori;

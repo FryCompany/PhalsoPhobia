@@ -39,6 +39,7 @@ int flag=0;
       break;
 
       case '3':
+      termina_gioco();
        flag=1;
       break;
 

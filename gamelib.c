@@ -161,7 +161,7 @@ static void imposta_difficolta(){
 do{
   flag=0;
   input=0;
-printf("Selezionare la difficolta :\n");
+printf("Selezionare la difficolta' :\n");
 printf("1) Dilettante \n");
 printf("2) Intermedio \n");
 printf("3) Incubo \n");
@@ -742,6 +742,15 @@ switch (stampa_zona) {
 }
 stampa_oggetti_Mappa=stampaMappa->oggetto_zona;
 switch (stampa_oggetti_Mappa) {
+  case 0:
+  printf("Sembra che qualcuno qui abbia lasciato un EMF\n");
+  break;
+  case 1:
+  printf("Sembra che qualcuno qui abbia lasciato una Spirit Box \n");
+  break;
+  case 2:
+  printf("Sembra che qualcuno qui abbia lasciato una videocamera\n");
+  break;
   case 5:
   printf("•E' presente una siringa di Adrenalina \n");
   break;
@@ -754,6 +763,7 @@ switch (stampa_oggetti_Mappa) {
   case 8:
   printf("•Nessun Oggetto\n" );
   break;
+
   default:
   printf("•Errore\n");
   break;
@@ -798,7 +808,7 @@ static  void stampa_info_p(int p){
         case 0:
         flag=1;
         if(appoggioMappa->prova==9){
-          printf("Hai racolto la prova EMF \n");
+          printf("Hai raccolto la prova EMF \n");
           azione_compiuta(p);
           giocatori[p].zaino[y]=prova_emf;
           raccolta_emf=1;
@@ -1028,7 +1038,7 @@ static  void stampa_info_p(int p){
         case 1:
         flag=1;
         if(appoggioMappa->prova==10){
-          printf("Hai racolto la prova Spirit Box \n");
+          printf("Hai raccolto la prova Spirit Box \n");
           azione_compiuta(p);
           giocatori[p].zaino[y]=prova_spirit_box;
           raccolta_spirit=1;
@@ -1252,7 +1262,7 @@ static  void stampa_info_p(int p){
         case 2:
         flag=1;
         if(appoggioMappa->prova==11){
-          printf("Hai racolto la prova Videocamera \n");
+          printf("Hai raccolto la prova Videocamera \n");
           azione_compiuta(p);
           giocatori[p].zaino[y]=prova_videocamera;
           raccolta_video=1;
@@ -1493,7 +1503,7 @@ static  void stampa_info_p(int p){
             case 8: //se il giocatore ha spazio nello zaino 8=nessun_oggetto
             flag=1;
             if(appoggioMappa->oggetto_zona!=8){
-              printf("Hai racolto l'oggetto presente nella zona \n");
+              printf("Hai raccolto l'oggetto presente nella zona \n");
               azione_compiuta(p);
               giocatori[p].zaino[y]=appoggioMappa->oggetto_zona;
               appoggioMappa->oggetto_zona=nessun_oggetto;
@@ -1629,9 +1639,9 @@ static  void stampa_info_p(int p){
                     giocatori[p].zaino[i]=calmanti;
                     printf("Hai ricevuto un calmante\n");
                   }
+                }else{
+                  contatore2=contatore2+1;
                 }
-              }else{
-                contatore2=contatore2+1;
               }
               }
               if(contatore2==4){
@@ -1648,24 +1658,24 @@ static  void stampa_info_p(int p){
                 if(giocatori[p].zaino[i]==coltello){
                   flag=1;
                   if(giocatori[p].sanita_mentale>30){
-                  for (int i = 0; i < num_giocatori; i++) {
-                      if(giocatori[p].posizione==giocatori[i].posizione){
-                      giocatori[i].stato=0;// Il giocatore è morto
+                  for (int z = 0; z < num_giocatori; z++) {
+                      if(giocatori[p].posizione==giocatori[z].posizione){
+                      giocatori[z].stato=0;// Il giocatore è morto
                       giocatori[p].stato=1;
                         azione_compiuta(p);
-
+                      }
                         for(int y=0;y<4; y++){
-                          if(giocatori[i].stato==0){
-                        if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
-                          appoggioMappa=giocatori[i].posizione;
-                          appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
+                          if(giocatori[z].stato==0){
+                        if(giocatori[z].zaino[y]==emf || giocatori[z].zaino[y]==spirit_box || giocatori[z].zaino[y]==videocamera){
+                          appoggioMappa=giocatori[z].posizione;
+                          appoggioMappa->oggetto_zona=giocatori[z].zaino[y]; //quando il giocatore muore è possiede
                                                                              // un oggetto per raccogliere le prove
                         }                                                    // almeno un'oggetto viene lascitato come oggetto
                         }                                           // nella zona per poter continuare a giocare
                         }
                       }
 
-                  }
+
                 }else{
                   printf("Non puoi usare questo oggetto!! \n");
                 }
@@ -1676,7 +1686,6 @@ static  void stampa_info_p(int p){
               }
               if(contatore2==4){
                 printf("Non possiedi l'oggetto nello zaino \n");
-                flag2=1;
               }
               break;
               default:
@@ -1719,7 +1728,9 @@ static  void stampa_info_p(int p){
           break;
         }
         //controllo se un giocatore e morto e quindi ha lascitato un oggetto per raccogliere le prove
-        if(appoggioMappa->oggetto_zona!=emf || appoggioMappa->oggetto_zona!=spirit_box || appoggioMappa->oggetto_zona!=videocamera){
+        if(appoggioMappa->oggetto_zona==emf || appoggioMappa->oggetto_zona==spirit_box || appoggioMappa->oggetto_zona==videocamera){
+
+        }else{
         switch (oggetto_spawn) {
           case 0 ... 69:
           appoggioMappa->oggetto_zona=nessun_oggetto;
@@ -1765,4 +1776,8 @@ static  void stampa_info_p(int p){
           appoggioMappa=stampa;
         }while(stampa!=primaMappa);
         primaMappa=NULL;
+ }
+  void termina_gioco(){
+    printf("Grazie per aver giocato!\n");
+
  }
