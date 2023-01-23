@@ -9,14 +9,14 @@
 
 
 
-int num_giocatori;
+
 
 //funzioni
 int imposta_gioco();
 void gioca(int num_giocatori);
 
 
-
+int num_giocatori;
 
 
 //enum

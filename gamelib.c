@@ -533,6 +533,7 @@ void  gioca(int num_giocatori){
    primaMappa->prova=nessuna_prova;
    primaMappa->oggetto_zona=nessun_oggetto; //AL primo turno non puo' esserci ne una prova ne un oggetto
   do{
+    morti_counter=0;
     for (int i = 0; i < num_giocatori; i++) {
       if(giocatori[i].stato==0){
         morti_counter=morti_counter+1;
@@ -544,6 +545,7 @@ void  gioca(int num_giocatori){
       printf("Hai perso.. \n");
       sleep(3);
       flagfinale=1;
+      controllo_imposta=0;
       deallocalista();
     }else{
     for (int i = 0; i < num_giocatori; i++) {
@@ -602,6 +604,7 @@ void  gioca(int num_giocatori){
    while((getchar()) != '\n');
    switch (scelta) {
      case '1':
+     flag_menu=0;
      if(fantasma==0){
       torna_caravan(p);
     }else{
@@ -610,30 +613,33 @@ void  gioca(int num_giocatori){
     }
      break;
      case '2':
+     flag_menu=0;
      stampa_info_p(p);
      break;
      case '3':
+     flag_menu=0;
      stampa_info_z(p);
      break;
      case '4':
-      if(num_giocatori!=1){
+      flag_menu=0;
      if(avanza_counter>=1){
        avanza_counter=avanza_counter-1;
      avanza(p);
       }else{
         printf("Non puoi più avanzare \n");
       }
-        }else{
-          avanza(p);
-        }
+
      break;
      case '5':
+     flag_menu=0;
      fantasma= raccogli_prova(p);
      break;
      case '6':
+     flag_menu=0;
      raccogli_oggetto(p);
      break;
      case '7':
+     flag_menu=0;
      usa_oggetto(p,num_giocatori);
      break;
      case '8':
@@ -650,6 +656,7 @@ static void torna_caravan(int p){
   printf("\e[1;1H\e[2J \n" );
   printf("Complimenti sei riuscito a tornare al caravan sano e salvo \n");
   giocatori[p].posizione=zonaCaravan;
+  azione_compiuta(p);
   for(int i=0;i<4;i++){
     if(giocatori[p].zaino[i]==prova_emf){
       prova1_trovata=1;
@@ -694,6 +701,7 @@ static void torna_caravan(int p){
       printf("Vittoria \n");
       sleep(3);
       deallocalista();
+      controllo_imposta=0;
     }
     }
 
@@ -791,6 +799,7 @@ static  void stampa_info_p(int p){
         flag=1;
         if(appoggioMappa->prova==9){
           printf("Hai racolto la prova EMF \n");
+          azione_compiuta(p);
           giocatori[p].zaino[y]=prova_emf;
           raccolta_emf=1;
           somma1=raccolta_emf+raccolta_spirit+raccolta_video;
@@ -847,6 +856,7 @@ static  void stampa_info_p(int p){
                       }else{
                         if(usa_sale==0){
                         giocatori[i].stato=0;
+                        printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                         flag_menu=1; //cosi il turno passa automaticamente al giocatore successivo
                         for(int y=0;y<4; y++){
                         if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
@@ -920,6 +930,7 @@ static  void stampa_info_p(int p){
                     }else{
                       if(usa_sale==0){
                       giocatori[i].stato=0;
+                        printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                       flag_menu=1; //cosi il turno passa automaticamente al giocatore successivo
                       for(int y=0;y<4; y++){
                       if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
@@ -990,7 +1001,7 @@ static  void stampa_info_p(int p){
                     }else{
                       if(usa_sale==0){
                       giocatori[i].stato=0;
-
+                      printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                       flag_menu=1; //cosi il turno passa automaticamente al giocatore successivo
                       for(int y=0;y<4; y++){
                       if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
@@ -1018,6 +1029,7 @@ static  void stampa_info_p(int p){
         flag=1;
         if(appoggioMappa->prova==10){
           printf("Hai racolto la prova Spirit Box \n");
+          azione_compiuta(p);
           giocatori[p].zaino[y]=prova_spirit_box;
           raccolta_spirit=1;
           somma1=raccolta_emf+raccolta_spirit+raccolta_video;
@@ -1074,6 +1086,7 @@ static  void stampa_info_p(int p){
                       }else{
                         if(usa_sale==0){
                         giocatori[i].stato=0;
+                        printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                         for(int y=0;y<4; y++){
                         if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
                           appoggioMappa=giocatori[i].posizione;
@@ -1143,6 +1156,7 @@ static  void stampa_info_p(int p){
                       }else{
                         if(usa_sale==0){
                         giocatori[i].stato=0;
+                        printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                         for(int y=0;y<4; y++){
                         if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
                           appoggioMappa=giocatori[i].posizione;
@@ -1212,6 +1226,7 @@ static  void stampa_info_p(int p){
                     }else{
                       if(usa_sale==0){
                       giocatori[i].stato=0;
+                      printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                       for(int y=0;y<4; y++){
                       if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
                         appoggioMappa=giocatori[i].posizione;
@@ -1238,6 +1253,7 @@ static  void stampa_info_p(int p){
         flag=1;
         if(appoggioMappa->prova==11){
           printf("Hai racolto la prova Videocamera \n");
+          azione_compiuta(p);
           giocatori[p].zaino[y]=prova_videocamera;
           raccolta_video=1;
           somma1=raccolta_emf+raccolta_spirit+raccolta_video;
@@ -1294,6 +1310,7 @@ static  void stampa_info_p(int p){
                       }else{
                         if(usa_sale==0){
                         giocatori[i].stato=0;
+                          printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                         for(int y=0;y<4; y++){
                         if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
                           appoggioMappa=giocatori[i].posizione;
@@ -1366,6 +1383,7 @@ static  void stampa_info_p(int p){
                     }else{
                       if(usa_sale==0){
                       giocatori[i].stato=0;
+                      printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                       for(int y=0;y<4; y++){
                       if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
                         appoggioMappa=giocatori[i].posizione;
@@ -1434,6 +1452,7 @@ static  void stampa_info_p(int p){
                     }else{
                       if(usa_sale==0){
                       giocatori[i].stato=0;
+                      printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                       for(int y=0;y<4; y++){
                       if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
                         appoggioMappa=giocatori[i].posizione;
@@ -1464,7 +1483,7 @@ static  void stampa_info_p(int p){
         }
         return fantasma;
       }
-  static void raccogli_oggetto(int p ){
+  static void raccogli_oggetto(int p){
         int oggetto,flag=0,flag_ogg=0;
         appoggioMappa=NULL;
         appoggioMappa=giocatori[p].posizione;
@@ -1475,6 +1494,7 @@ static  void stampa_info_p(int p){
             flag=1;
             if(appoggioMappa->oggetto_zona!=8){
               printf("Hai racolto l'oggetto presente nella zona \n");
+              azione_compiuta(p);
               giocatori[p].zaino[y]=appoggioMappa->oggetto_zona;
               appoggioMappa->oggetto_zona=nessun_oggetto;
               flag_ogg=1;
@@ -1532,9 +1552,10 @@ static  void stampa_info_p(int p){
                 }else{
                 if(giocatori[p].sanita_mentale>=60){
                 giocatori[p].sanita_mentale=100;// se la sanita mentale e maggiore o uguale a 60
-                                                //viene impostata la sanita mentale massima
+                azione_compiuta(p);                                //viene impostata la sanita mentale massima
               }else{
                 giocatori[p].sanita_mentale+=40;
+                azione_compiuta(p);
               }
                 giocatori[p].zaino[i]=8; //rimuovo l'oggetto utilizzato
               }
@@ -1557,6 +1578,7 @@ static  void stampa_info_p(int p){
                 if(giocatori[p].zaino[i]==sale){
                   flag=1;
                   usa_sale=1;
+                  azione_compiuta(p);
                   giocatori[p].zaino[i]=nessun_oggetto;
 
               }else{
@@ -1577,6 +1599,7 @@ static  void stampa_info_p(int p){
                 if(flag==0){//se il giocatore ha 2 oggetti uguali ne utilizza solo uno
                 if(giocatori[p].zaino[i]==adrenalina){
                   flag=1;
+                  azione_compiuta(p);
                   avanza_counter=avanza_counter+1;
                   giocatori[p].zaino[i]=nessun_oggetto;
               }else{
@@ -1598,6 +1621,7 @@ static  void stampa_info_p(int p){
                 if(giocatori[p].zaino[i]==cento_dollari){
                   g=rand()%2;
                   flag=1;
+                  azione_compiuta(p);
                   if(g==0){
                     giocatori[p].zaino[i]=sale;
                     printf("Hai ricevuto del sale \n");
@@ -1623,21 +1647,24 @@ static  void stampa_info_p(int p){
                 if(flag==0){//se il giocatore ha 2 oggetti uguali ne utilizza solo uno
                 if(giocatori[p].zaino[i]==coltello){
                   flag=1;
-                  if(giocatori[p].sanita_mentale<30){
+                  if(giocatori[p].sanita_mentale>30){
                   for (int i = 0; i < num_giocatori; i++) {
-                    if(memcmp(&giocatori[p],&giocatori[i], sizeof(struct Giocatore)) != 0){
-                      if(giocatori[i].posizione==giocatori[p].posizione){
-                        //giocatori[i].stato=0;// Il giocatore è morto
+                      if(giocatori[p].posizione==giocatori[i].posizione){
+                      giocatori[i].stato=0;// Il giocatore è morto
+                      giocatori[p].stato=1;
+                        azione_compiuta(p);
+
                         for(int y=0;y<4; y++){
+                          if(giocatori[i].stato==0){
                         if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
                           appoggioMappa=giocatori[i].posizione;
                           appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
                                                                              // un oggetto per raccogliere le prove
                         }                                                    // almeno un'oggetto viene lascitato come oggetto
-                                                                             // nella zona per poter continuare a giocare
+                        }                                           // nella zona per poter continuare a giocare
                         }
                       }
-                    }
+
                   }
                 }else{
                   printf("Non puoi usare questo oggetto!! \n");
@@ -1667,6 +1694,7 @@ static  void stampa_info_p(int p){
         int prova_spawn=0,oggetto_spawn=0;
         prova_spawn=rand()%100;
         oggetto_spawn=rand()%100;
+        azione_compiuta(p);
         appoggioMappa=giocatori[p].posizione;
         appoggioMappa=appoggioMappa->prossima_zona;
         giocatori[p].posizione=appoggioMappa;
@@ -1721,7 +1749,7 @@ static  void stampa_info_p(int p){
           sleep(3);
         }else{
           giocatori[p].stato=0;
-          //manca messaggio di morte 
+          printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
         }
           break;
         }

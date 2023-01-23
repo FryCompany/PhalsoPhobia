@@ -30,6 +30,7 @@ int flag=0;
       case '2':
       if(controllo==1){
         gioca(num_giocatori);
+        controllo=0;
       }else{
       printf("Non hai ancora impostato il gioco!!!\n");
       sleep(2);
@@ -38,13 +39,11 @@ int flag=0;
       break;
 
       case '3':
-      //dealloca
        flag=1;
       break;
 
       default:
-      printf( " Errore di inserimento \n");
-
+      printf( "Errore di inserimento \n");
       break;
 
 
