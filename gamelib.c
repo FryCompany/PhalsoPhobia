@@ -1665,8 +1665,8 @@ static  void stampa_info_p(int p){
                         azione_compiuta(p);
                       }
                         for(int y=0;y<4; y++){
-                          if(giocatori[z].stato==0){
-                        if(giocatori[z].zaino[y]==emf || giocatori[z].zaino[y]==spirit_box || giocatori[z].zaino[y]==videocamera){
+                          if(giocatori[y].stato==0){
+                        if(giocatori[y].zaino[y]==emf || giocatori[z].zaino[y]==spirit_box || giocatori[z].zaino[y]==videocamera){
                           appoggioMappa=giocatori[z].posizione;
                           appoggioMappa->oggetto_zona=giocatori[z].zaino[y]; //quando il giocatore muore è possiede
                                                                              // un oggetto per raccogliere le prove
