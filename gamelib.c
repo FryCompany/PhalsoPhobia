@@ -7,7 +7,7 @@ static void imposta_oggetto_iniziale(int num_giocatori);
 static void  crea_mappa();
 static void inserisci_zona();
 static void cancella_zona();
-static int chiudi_mappa();      //RICORDA DI METTERLI IN ORDINE DI CREAZIONE
+static int chiudi_mappa();
 static void  stampa_mappa();
 static void  scegli_oggetto(int num_giocatori);
 static void stampa_inventario(int p);
@@ -41,23 +41,16 @@ static struct Zona_Mappa* conteggioMappa;
 static struct Zona_Mappa* zonaCaravan;
 
 
-
+//Variabili globali
 int controllo_imposta=0,difficolta=0,avanza_counter=1,usa_sale=0;
 int prova1_trovata=0,prova2_trovata=0,prova3_trovata=0;
 int somma1=0,raccolta_emf=0,raccolta_spirit=0,raccolta_video=0,flag_menu=0,flagfinale=0;
 
 
-// comando : gcc  main.c gamelib.c
-// Definizioni delle funzioni in gamelib.c.
-// Piu altre funzioni di supporto.
-// Le funzioni richiamabili in main.c non devono essere static.
-// Le altre devono essere static (non visibili all'esterno).
-
-
  int imposta_gioco(){
   if(controllo_imposta==1){
     deallocalista(); //se il giocatore
-  }                 // vuole reimpostare il gioco devo deallocare le cose allocate prima
+  }                 // vuole reimpostare il gioco  dealloco tutto quello creato in precedenza
   char scelta=0;
   int flag=0;
   printf("\e[1;1H\e[2J \n" );
@@ -146,77 +139,74 @@ static void imposta_nomi(int num_giocatori){
             break;
 
           }
-    }while(flag==1);
+        }while(flag==1);
        printf("il nome del %i giocatore : %s\n",i+1,giocatori[i].nome );
-}
+      }
 
 
-}
+      }
 
 static void imposta_difficolta(){
-  char input;
-  int flag=0;
-  printf("\e[1;1H\e[2J \n" );
-do{
-  flag=0;
-  input=0;
-printf("Selezionare la difficolta' :\n");
-printf("1) Dilettante \n");
-printf("2) Intermedio \n");
-printf("3) Incubo \n");
-printf("Inserire la scelta :");
-scanf("%c", &input);
-while((getchar()) != '\n');
-printf("\e[1;1H\e[2J \n" );
-switch (input) {
-  case '1':
-    difficolta=1;
-    flag=1;
-    break;
-  case '2':
-    difficolta=2;
-    flag=1;
-    break;
-  case '3':
-    difficolta=3;
-    flag=1;
-    break;
+    char input;
+    int flag=0;
+    printf("\e[1;1H\e[2J \n" );
+    do{
+      flag=0;
+      input=0;
+      printf("Selezionare la difficolta' :\n");
+      printf("1) Dilettante \n");
+      printf("2) Intermedio \n");
+      printf("3) Incubo \n");
+      printf("Inserire la scelta :");
+      scanf("%c", &input);
+      while((getchar()) != '\n');
+      printf("\e[1;1H\e[2J \n" );
+      switch (input) {
+        case '1':
+        difficolta=1;
+        flag=1;
+        break;
+        case '2':
+        difficolta=2;
+        flag=1;
+        break;
+        case '3':
+        difficolta=3;
+        flag=1;
+        break;
 
-   default:
-   printf("Valore errato \n");
-   sleep(1);
-    break;
+        default:
+        printf("Valore errato \n");
+        sleep(1);
+        break;
+      }
+    }while (flag!=1);
   }
-}while (flag!=1);
-
-
-
-}
 static void imposta_oggetto_iniziale(int num_giocatori) {
-int oggetto_iniziale;
-int flag=0;
+  int oggetto_iniziale;
+  int flag=0;
 
-for (int i = 0; i < num_giocatori; i++) {
-  oggetto_iniziale=rand()%5;
+  for (int i = 0; i < num_giocatori; i++) {
+    oggetto_iniziale=rand()%5;
 
-  giocatori[i].zaino[0]=oggetto_iniziale;
-  if (oggetto_iniziale<=2) { //controllo se e' stato generato almeno un oggetto neccessario
-    flag=1;
-  }
-  }
+    giocatori[i].zaino[0]=oggetto_iniziale;
+    if (oggetto_iniziale<=2) { //controllo se e' stato generato almeno un oggetto neccessario
+      flag=1;
+      }
+    }
 
 
 
-  if (flag==0){
+    if (flag==0){
       int oggetto_necessario=rand()%3;   //se non viene inserito un oggetto per raccogliere le prove
       if(num_giocatori!=1){                                //viene imposto ad un giocatore casuale
       int giocatore_casuale=rand()%num_giocatori+1;
       giocatori[giocatore_casuale].zaino[0]=oggetto_necessario;
       }else{ // se c'è un solo giocatore lo inserisco direttamente nel suo inventario
       giocatori[0].zaino[0]=oggetto_necessario;
+      }
     }
   }
-}
 static void scegli_oggetto(int num_giocatori){
   int turni[num_giocatori];
   int temp=0,random_i,flag;
@@ -237,7 +227,6 @@ static void scegli_oggetto(int num_giocatori){
     printf("\e[1;1H\e[2J \n" );
     do{
       flag=0;
-
       printf("Selezionare l'oggetto da inserire nello zaino tra :\n");
       printf(" 1)Adrenalina \n");
       printf(" 2)Cento Dollari \n");
@@ -286,15 +275,15 @@ static  void crea_mappa(){
       do{
       mappaNuova->zona=rand()%7;
         }while( mappaNuova->zona ==0);
-      if( primaMappa== NULL) {// No node in the list
-        primaMappa = mappaNuova; // The first node is the newly created one
-        ultimaMappa = mappaNuova; // The last node is the newly created one
+      if( primaMappa== NULL) {// se non c'è nessuna mappa
+        primaMappa = mappaNuova; // viene impostata come prima mappa
+        ultimaMappa = mappaNuova;
       }
       else
       {
- // Else, there is already at least one node in the list
-  ultimaMappa-> prossima_zona= mappaNuova; // the last node becomes the second one
-  ultimaMappa= mappaNuova; // The last node is the newly created one
+
+  ultimaMappa-> prossima_zona= mappaNuova;
+  ultimaMappa= mappaNuova;
   ultimaMappa->prossima_zona=primaMappa;
   }
   }
@@ -310,7 +299,6 @@ static  void crea_mappa(){
     printf("Inserire la scelta :");
     scanf("%c", &scelta);
     while((getchar()) != '\n');
-  //  printf("\e[1;1H\e[2J \n" );
     switch (scelta) {
       case '1':
       inserisci_zona();
@@ -326,9 +314,9 @@ static  void crea_mappa(){
 
       case '4':
       flag2=chiudi_mappa();
-      if(flag2==1){
+      if(flag2==1){//se il flag2 è uguale 1 vuol dire che non è presente il numero minimo di mappe
       printf("Non è presente il numero minimo di zone della mappa (Min3)\n");
-    }else{
+      }else{
       flag1=1;}
       break;
 
@@ -339,9 +327,9 @@ static  void crea_mappa(){
   }while (flag1!=1);
 
   zonaCaravan = (struct Zona_Mappa *) malloc(sizeof(struct Zona_Mappa));//creo la zona di memoria per il caravan
-  zonaCaravan->prossima_zona=primaMappa; //prossima zona la imposto la prima
+  zonaCaravan->prossima_zona=primaMappa; //prossima zona la imposto la prima mappa perchè se il giocatore va avanti deve andare nella prima zona
   zonaCaravan->zona=caravan;
-  zonaCaravan->oggetto_zona=nessun_oggetto;
+  zonaCaravan->oggetto_zona=nessun_oggetto;//imposto nel caravan nessun oggetto e nessuna prova
   zonaCaravan->prova=nessuna_prova;
 
 }
@@ -352,29 +340,26 @@ static void inserisci_zona(){
     do{
     mappaNuova->zona=rand()%7;
       }while( mappaNuova->zona ==0); //effettuo un controllo per verificare che non esca 0 perche è il caravan e non  si puo creare un caravan
-    if( primaMappa== NULL) {// No node in the list
-      primaMappa = mappaNuova; // The first node is the newly created one
-      ultimaMappa = mappaNuova; // The last node is the newly created one
+    if( primaMappa== NULL) {
+      primaMappa = mappaNuova;
+      ultimaMappa = mappaNuova;
       primaMappa->prossima_zona=primaMappa;
     }
     else
     {
-      // Else, there is already at least one node in the list
-      ultimaMappa-> prossima_zona= mappaNuova; // the last node becomes the second one
-      ultimaMappa= mappaNuova; // The last node is the newly created one
+      ultimaMappa-> prossima_zona= mappaNuova;
+      ultimaMappa= mappaNuova;
       ultimaMappa->prossima_zona=primaMappa;
     }
   }
 
   static void stampa_mappa(){
     printf("\e[1;1H\e[2J \n" );
-    if(primaMappa == NULL) // No node in the list
-    {
+    if(primaMappa == NULL){
       printf("Non è presente nessuna zona della mappa! \n");
     }
     else
     {
-
       // uso un puntatore per stampare la mappa
       stampaMappa = primaMappa;
       do{
@@ -420,21 +405,21 @@ static void inserisci_zona(){
          penultimaMappa = NULL;
          appoggioMappa = primaMappa;
         if(appoggioMappa->prossima_zona == primaMappa) {// controllo se è l'ultimo della lista cioè il primo perchè la mappa e circolare
-          free(appoggioMappa); // Free memory
-          primaMappa= NULL; // Now the list is empty
+          free(appoggioMappa);
+          primaMappa= NULL;
         }
-        else {// Otherwise, I need to scan the list until I find the last node (pLast)
+        else {
           do{
-            if((appoggioMappa-> prossima_zona) == ultimaMappa) {// Reached the node before the end
+            if((appoggioMappa-> prossima_zona) == ultimaMappa) {
               penultimaMappa = appoggioMappa;
               break;
             }
             else
-            appoggioMappa= appoggioMappa-> prossima_zona; // Otherwise, I need to iterate
+            appoggioMappa= appoggioMappa-> prossima_zona;
           }while((appoggioMappa-> prossima_zona) != NULL);
-          free(penultimaMappa-> prossima_zona); // Free memory allocated to the last node
+          free(penultimaMappa-> prossima_zona);
           penultimaMappa-> prossima_zona = primaMappa; // imposto alla penultima zona la prima perchè è diventatal'ultima della lista
-          ultimaMappa = penultimaMappa; // pPrev becomes the last node
+          ultimaMappa = penultimaMappa;
         }
       }
 
@@ -444,8 +429,7 @@ static void inserisci_zona(){
 static int chiudi_mappa(){
     int num_mappa=0;
     int flag=0;
-    if(primaMappa == NULL) // No node in the list
-    {
+    if(primaMappa == NULL){
       flag=1;
       printf("Non è presente nessuna zona della mappa! \n");
     }
@@ -516,6 +500,10 @@ static int chiudi_mappa(){
 
 void  gioca(int num_giocatori){
   printf("\e[1;1H\e[2J \n" );
+  printf("Benvenuto in Phasm.. \n");
+  printf("Emh in PhalsoPhobia \n");
+  printf("Raccogli tutte le prove e portale al caravan per vincere la partita \n");
+  sleep(5);
     int turni[num_giocatori];
     int temp=0,random_i;
     for (int i = 0; i < num_giocatori; i++) {
@@ -604,7 +592,11 @@ void  gioca(int num_giocatori){
      case '1':
      flag_menu=0;
      if(fantasma==0){
+       if(giocatori[p].posizione!=zonaCaravan){
       torna_caravan(p);
+    }else{
+      printf("Ti trovi gia al caravan \n");
+    }
     }else{
       printf("Non puoi tornare al caravan se il fantasma e presente nella stanza \n");
       printf("Finisci il turno per far scomparire il fantasma..\n");
@@ -844,12 +836,15 @@ static  void stampa_info_p(int p){
     int oggetto,flag=0,spawn_fantasma=0,fantasma=0;
     appoggioMappa=NULL;
     appoggioMappa=giocatori[p].posizione;
+    flag=0;
     for (int y = 0; y < 4; y++) {
       oggetto=giocatori[p].zaino[y];
       switch (oggetto) {
         case 0:
-        flag=1;
+
         if(appoggioMappa->prova==9){
+          flag=1;
+
           printf("Hai raccolto la prova EMF \n");
           azione_compiuta(p);
           giocatori[p].zaino[y]=prova_emf;
@@ -1052,13 +1047,12 @@ static  void stampa_info_p(int p){
 
             break;
           }
-        }else{
-          printf("Non puoi raccogliere nessuna prova!! \n");
         }
         break;
         case 1:
-        flag=1;
+
         if(appoggioMappa->prova==10){
+          flag=1;
           printf("Hai raccolto la prova Spirit Box \n");
           azione_compiuta(p);
           giocatori[p].zaino[y]=prova_spirit_box;
@@ -1255,13 +1249,12 @@ static  void stampa_info_p(int p){
 
             break;
           }
-        }else{
-          printf("Non puoi raccogliere nessuna prova!! \n");
         }
         break;
         case 2:
-        flag=1;
+
         if(appoggioMappa->prova==11){
+          flag=1;
           printf("Hai raccolto la prova Videocamera \n");
           azione_compiuta(p);
           giocatori[p].zaino[y]=prova_videocamera;
@@ -1460,8 +1453,6 @@ static  void stampa_info_p(int p){
 
             break;
           }
-        }else{
-          printf("Non puoi raccogliere nessuna prova!! \n");
         }
         break;
 
@@ -1470,6 +1461,7 @@ static  void stampa_info_p(int p){
       if(flag==0){
         printf("Non possiedi l'oggetto necessario per raccogliere la prova \n" );
         }
+
         return fantasma;
       }
   static void raccogli_oggetto(int p){
@@ -1636,7 +1628,7 @@ static  void stampa_info_p(int p){
                 if(flag==0){//se il giocatore ha 2 oggetti uguali ne utilizza solo uno
                 if(giocatori[p].zaino[i]==coltello){
                   flag=1;
-                  if(giocatori[p].sanita_mentale>30){
+                  if(giocatori[p].sanita_mentale<30){
                   for (int z = 0; z < num_giocatori; z++) {
                       if(giocatori[p].posizione==giocatori[z].posizione){
                       giocatori[z].stato=0;// Il giocatore è morto
