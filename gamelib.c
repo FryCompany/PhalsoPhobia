@@ -105,14 +105,13 @@ do{
   }
 
 static void imposta_nomi(int num_giocatori){
-  int flag=0,flag2=0,i=0;
+  int flag=0,i=0;
   char nomi[4][20];
-  char appoggio[20];
   for(i=0;i<num_giocatori;i++){
     printf("\e[1;1H\e[2J \n" );
     do{
     flag=0;
-    flag2=0;
+
 
     printf("inserire il nome del %i giocatore :",i+1 );
        scanf("%s", giocatori[i].nome);
@@ -518,8 +517,7 @@ static int chiudi_mappa(){
 void  gioca(int num_giocatori){
   printf("\e[1;1H\e[2J \n" );
     int turni[num_giocatori];
-    int temp=0,random_i,possibila_prova,stampa_zona,fantasma=0;
-    char input;
+    int temp=0,random_i;
     for (int i = 0; i < num_giocatori; i++) {
       giocatori[i].posizione=primaMappa; //imposto tutti i giocatori presenti nella mappa iniziale
     }
@@ -652,11 +650,63 @@ void  gioca(int num_giocatori){
 
  }
 static void torna_caravan(int p){
-  int pos_prova=0,somma=0;
+  int pos_prova=0,somma=0,count_ogg=0,oggetto_inv=0,flag_inv=0,flag_scelta=0;
+  char scelta_mor;
   printf("\e[1;1H\e[2J \n" );
   printf("Complimenti sei riuscito a tornare al caravan sano e salvo \n");
   giocatori[p].posizione=zonaCaravan;
   azione_compiuta(p);
+
+  for(int c=0;c<num_giocatori;c++){
+    count_ogg=0;
+  for(int y=0;y<4; y++){
+
+    if(giocatori[c].stato==0){
+    if(giocatori[c].zaino[y]==emf || giocatori[c].zaino[y]==spirit_box || giocatori[c].zaino[y]==videocamera){
+      do{
+        flag_inv=0;
+      printf("Che sfortuna %s è morto vuoi raccogliere il suo oggetto per raccogliere le prove?\n",giocatori[c].nome);
+      printf("Y(si) N(no) :" );
+      scanf(" %c",&scelta_mor);
+      switch (scelta_mor) {
+        case 'y':
+        case 'Y':
+        flag_scelta=0;
+        flag_inv=0;
+        for(int g=0;g<4;g++){
+          oggetto_inv=giocatori[p].zaino[g];
+          switch (oggetto_inv) {
+            case 8:
+            if(flag_inv==0){
+            giocatori[p].zaino[g]=giocatori[c].zaino[y];
+            flag_inv=1;
+            giocatori[c].zaino[y]=nessun_oggetto;
+            }
+            break;
+            default:
+            count_ogg+=1;
+            break;
+          }
+        }
+        if(count_ogg==4){
+          printf("Non possiedi spazio nello zaino \n");
+        }
+        break;
+        case 'n':
+        case 'N':
+        flag_scelta=0;
+        break;
+        default:
+        flag_scelta=1;
+        break;
+            }
+    }while(flag_scelta==1);
+
+    }
+    }
+    }
+  }
+
   for(int i=0;i<4;i++){
     if(giocatori[p].zaino[i]==prova_emf){
       prova1_trovata=1;
@@ -742,15 +792,7 @@ switch (stampa_zona) {
 }
 stampa_oggetti_Mappa=stampaMappa->oggetto_zona;
 switch (stampa_oggetti_Mappa) {
-  case 0:
-  printf("Sembra che qualcuno qui abbia lasciato un EMF\n");
-  break;
-  case 1:
-  printf("Sembra che qualcuno qui abbia lasciato una Spirit Box \n");
-  break;
-  case 2:
-  printf("Sembra che qualcuno qui abbia lasciato una videocamera\n");
-  break;
+
   case 5:
   printf("•E' presente una siringa di Adrenalina \n");
   break;
@@ -868,14 +910,7 @@ static  void stampa_info_p(int p){
                         giocatori[i].stato=0;
                         printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                         flag_menu=1; //cosi il turno passa automaticamente al giocatore successivo
-                        for(int y=0;y<4; y++){
-                        if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
-                          appoggioMappa=giocatori[i].posizione;
-                          appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
-                                                                             // un oggetto per raccogliere le prove
-                        }                                                    // quel oggetto viene lascitato come oggetto
-                                                                             // nella zona per poter continuare a giocare
-                        }
+
                       }
                     }
                       }
@@ -942,14 +977,7 @@ static  void stampa_info_p(int p){
                       giocatori[i].stato=0;
                         printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                       flag_menu=1; //cosi il turno passa automaticamente al giocatore successivo
-                      for(int y=0;y<4; y++){
-                      if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
-                        appoggioMappa=giocatori[i].posizione;
-                        appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
-                                                                           // un oggetto per raccogliere le prove
-                      }                                                    // quel oggetto viene lascitato come oggetto
-                                                                           // nella zona per poter continuare a giocare
-                      }
+
                     }
                     }
                     }
@@ -1013,14 +1041,7 @@ static  void stampa_info_p(int p){
                       giocatori[i].stato=0;
                       printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
                       flag_menu=1; //cosi il turno passa automaticamente al giocatore successivo
-                      for(int y=0;y<4; y++){
-                      if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
-                        appoggioMappa=giocatori[i].posizione;
-                        appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
-                                                                           // un oggetto per raccogliere le prove
-                      }                                                    // quel oggetto viene lascitato come oggetto
-                                                                           // nella zona per poter continuare a giocare
-                      }
+
                     }
                   }
                     }
@@ -1097,14 +1118,7 @@ static  void stampa_info_p(int p){
                         if(usa_sale==0){
                         giocatori[i].stato=0;
                         printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
-                        for(int y=0;y<4; y++){
-                        if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
-                          appoggioMappa=giocatori[i].posizione;
-                          appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
-                                                                             // un oggetto per raccogliere le prove
-                        }                                                    // quel oggetto viene lascitato come oggetto
-                                                                             // nella zona per poter continuare a giocare
-                        }
+
                       }
                       }
                       }
@@ -1167,14 +1181,7 @@ static  void stampa_info_p(int p){
                         if(usa_sale==0){
                         giocatori[i].stato=0;
                         printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
-                        for(int y=0;y<4; y++){
-                        if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
-                          appoggioMappa=giocatori[i].posizione;
-                          appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
-                                                                             // un oggetto per raccogliere le prove
-                        }                                                    // quel oggetto viene lascitato come oggetto
-                                                                             // nella zona per poter continuare a giocare
-                        }
+
                       }
                     }
                     }
@@ -1237,14 +1244,7 @@ static  void stampa_info_p(int p){
                       if(usa_sale==0){
                       giocatori[i].stato=0;
                       printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
-                      for(int y=0;y<4; y++){
-                      if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
-                        appoggioMappa=giocatori[i].posizione;
-                        appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
-                                                                           // un oggetto per raccogliere le prove
-                      }                                                    // quel oggetto viene lascitato come oggetto
-                                                                           // nella zona per poter continuare a giocare
-                      }
+
                     }
                     }
                     }
@@ -1321,14 +1321,7 @@ static  void stampa_info_p(int p){
                         if(usa_sale==0){
                         giocatori[i].stato=0;
                           printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
-                        for(int y=0;y<4; y++){
-                        if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
-                          appoggioMappa=giocatori[i].posizione;
-                          appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
-                                                                             // un oggetto per raccogliere le prove
-                        }                                                    // quel oggetto viene lascitato come oggetto
-                                                                             // nella zona per poter continuare a giocare
-                        }
+
                       }
                       }
                       }
@@ -1394,14 +1387,7 @@ static  void stampa_info_p(int p){
                       if(usa_sale==0){
                       giocatori[i].stato=0;
                       printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
-                      for(int y=0;y<4; y++){
-                      if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
-                        appoggioMappa=giocatori[i].posizione;
-                        appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
-                                                                           // un oggetto per raccogliere le prove
-                      }                                                    // quel oggetto viene lascitato come oggetto
-                                                                           // nella zona per poter continuare a giocare
-                      }
+
                     }
                     }
                     }
@@ -1463,14 +1449,7 @@ static  void stampa_info_p(int p){
                       if(usa_sale==0){
                       giocatori[i].stato=0;
                       printf("Il tuo viaggio finisce qui, ma la tua storia sarà ricordata\n" );
-                      for(int y=0;y<4; y++){
-                      if(giocatori[i].zaino[y]==emf || giocatori[i].zaino[y]==spirit_box || giocatori[i].zaino[y]==videocamera){
-                        appoggioMappa=giocatori[i].posizione;
-                        appoggioMappa->oggetto_zona=giocatori[i].zaino[y]; //quando il giocatore muore è possiede
-                                                                           // un oggetto per raccogliere le prove
-                      }                                                    // quel oggetto viene lascitato come oggetto
-                                                                           // nella zona per poter continuare a giocare
-                      }
+
                     }
                     }
                     }
@@ -1661,19 +1640,11 @@ static  void stampa_info_p(int p){
                   for (int z = 0; z < num_giocatori; z++) {
                       if(giocatori[p].posizione==giocatori[z].posizione){
                       giocatori[z].stato=0;// Il giocatore è morto
-                      giocatori[p].stato=1;
                         azione_compiuta(p);
                       }
-                        for(int y=0;y<4; y++){
-                          if(giocatori[y].stato==0){
-                        if(giocatori[y].zaino[y]==emf || giocatori[z].zaino[y]==spirit_box || giocatori[z].zaino[y]==videocamera){
-                          appoggioMappa=giocatori[z].posizione;
-                          appoggioMappa->oggetto_zona=giocatori[z].zaino[y]; //quando il giocatore muore è possiede
-                                                                             // un oggetto per raccogliere le prove
-                        }                                                    // almeno un'oggetto viene lascitato come oggetto
-                        }                                           // nella zona per poter continuare a giocare
-                        }
                       }
+                      giocatori[p].stato=1;
+
 
 
                 }else{
